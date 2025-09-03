@@ -47,12 +47,14 @@
     font-size: 3vw;
     position: relative;
     z-index: 20; /* 이미지보다 위에 */
+    color: rgba(0, 0, 0, 0.8) !important; /* 0,0,0,.8 색상 값 강제 적용 */
   }
   
   /* 가로가 긴 형태 (landscape)일 때 3vh */
   @media (orientation: landscape) {
     .text-gray-700 {
       font-size: 3vh;
+      color: rgba(0, 0, 0, 0.8) !important; /* 0,0,0,.8 색상 값 강제 적용 */
     }
   }
   
@@ -60,6 +62,7 @@
   @media (orientation: portrait) {
     .text-gray-700 {
       font-size: 3vw;
+      color: rgba(0, 0, 0, 0.8) !important; /* 0,0,0,.8 색상 값 강제 적용 */
     }
   }
   

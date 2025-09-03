@@ -75,11 +75,14 @@ npm install
 `.env.local` 파일을 생성하고 다음 내용을 추가하세요:
 
 ```env
-# Perplexity API Key (이미 코드에 포함됨)
-PERPLEXITY_API_KEY=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
+# Perplexity API Key
+PERPLEXITY_API_KEY=your-perplexity-api-key-here
 
-# Supertone API Key (필요시 설정)
+# Supertone API Key
 SUPERTONE_API_KEY=your-supertone-api-key-here
+
+# Google Gemini API Key
+GOOGLE_API_KEY=your-google-api-key-here
 ```
 
 ### 3. 개발 서버 실행
@@ -118,7 +121,7 @@ http://localhost:3000 으로 접속하여 애플리케이션을 확인하세요.
 ## 🔧 API 설정
 
 ### Perplexity API
-- **API Key**: `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`
+- **API Key**: 환경변수에서 설정
 - **Model**: `llama-3.1-sonar-small-128k-online`
 - **Search**: 최신 정보 검색 지원
 

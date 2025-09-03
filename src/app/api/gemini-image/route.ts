@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_KEY = 'AIzaSyCaBB4H6RB_rwwq3nxDM16mHAh6kvUlxSc';
+const API_KEY = process.env.GOOGLE_API_KEY;
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +12,11 @@ export async function POST(request: NextRequest) {
         { error: '브랜드 보이스 텍스트가 필요합니다.' },
         { status: 400 }
       );
+    }
+
+    // API 키 검증
+    if (!API_KEY) {
+      return NextResponse.json({ error: 'Google API key is not configured' }, { status: 500 })
     }
 
     // Gemini 2.5 Flash Image 모델 초기화

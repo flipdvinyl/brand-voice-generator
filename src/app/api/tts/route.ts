@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // Supertone API 키 설정
-const SUPERTONE_API_KEY = '1f6f3292d2cee64b0402f7ce00bda08a'
+const SUPERTONE_API_KEY = process.env.SUPERTONE_API_KEY
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +12,11 @@ export async function POST(request: NextRequest) {
         { error: '텍스트가 필요합니다.' },
         { status: 400 }
       )
+    }
+
+    // API 키 검증
+    if (!SUPERTONE_API_KEY) {
+      return NextResponse.json({ error: 'Supertone API key is not configured' }, { status: 500 })
     }
 
     // 기본 설정값

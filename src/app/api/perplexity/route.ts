@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const PERPLEXITY_API_KEY = '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'
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY
 const PERPLEXITY_API_URL = 'https://api.perplexity.ai/chat/completions'
 
 export async function POST(request: NextRequest) {
@@ -12,6 +12,11 @@ export async function POST(request: NextRequest) {
         { error: '회사명과 프롬프트가 필요합니다.' },
         { status: 400 }
       )
+    }
+
+    // API 키 검증
+    if (!PERPLEXITY_API_KEY) {
+      return NextResponse.json({ error: 'Perplexity API key is not configured' }, { status: 500 })
     }
 
     // Perplexity API 호출
