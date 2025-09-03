@@ -1,0 +1,39 @@
+{
+  "name": "brand-voice-generator",
+  "version": "1.0.0",
+  "description": "AI-powered brand voice generator using Perplexity API and Supertone TTS",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "autoprefixer": "^10.4.0",
+    "axios": "^1.6.0",
+    "next": "^14.0.0",
+    "postcss": "^8.4.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "tailwindcss": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "brand",
+    "voice",
+    "ai",
+    "tts",
+    "perplexity"
+  ],
+  "author": "Brand Voice Generator Team",
+  "license": "MIT"
+}
