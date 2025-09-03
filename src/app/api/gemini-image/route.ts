@@ -5,7 +5,7 @@ const API_KEY = process.env.GOOGLE_API_KEY;
 
 export async function POST(request: NextRequest) {
   try {
-    const { brandVoiceText } = await request.json();
+    const { brandVoiceText, windowRatio } = await request.json();
 
     if (!brandVoiceText) {
       return NextResponse.json(
@@ -13,6 +13,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // 창 비율 정보 로깅
+    console.log('📐 창 비율 정보:', windowRatio);
 
     // API 키 검증
     if (!API_KEY) {
@@ -49,6 +52,15 @@ export async function POST(request: NextRequest) {
       throw new Error(`사용 가능한 Gemini 모델을 찾을 수 없습니다. 마지막 오류: ${lastError}`);
     }
 
+    // 이미지 비율을 9:16으로 고정
+    const aspectRatio = '9:16'; // 항상 9:16 비율
+    const imageWidth = 576; // 9:16 비율에 맞는 너비
+    const imageHeight = 1024; // 9:16 비율에 맞는 높이
+    
+    console.log('📐 이미지 비율 고정:', { aspectRatio, imageWidth, imageHeight });
+    
+    console.log('🎨 이미지 생성 설정:', { aspectRatio, imageWidth, imageHeight });
+    
     // 이미지 생성을 위한 프롬프트 구성
     const prompt = `Create a high-quality, professional portrait image of a person that represents the following brand voice description. 
     The person should embody the characteristics and personality described in the brand voice.
@@ -56,20 +68,32 @@ export async function POST(request: NextRequest) {
     Brand Voice Description: ${brandVoiceText}
     
     Requirements:
-    - Professional head and shoulders portrait
-    - Facial expression and posture that reflects the brand's personality
+    - Portrait from head to knees (cut off at knee level)
+    - Professional standing pose that reflects the brand's personality
+    - Facial expression and upper body posture that matches the brand character
     - High-quality, detailed image with realistic style
     - 회사의 주요 사업과 연계된 코스프레 연출
+    - 회사의 주요 제품 한손에 들기
     - Natural and engaging expression
     - The person should look like they could represent this brand authentically
     - Japanese
     - Nikon film camera natural style
-    - Heavy film grain`;
+    - Heavy film grain
+    - Image dimensions: ${imageWidth}x${imageHeight} pixels
+    - Image aspect ratio: ${aspectRatio} (${imageWidth}:${imageHeight})
+    - Current window ratio: ${windowRatio?.width || 'unknown'}x${windowRatio?.height || 'unknown'}
+    - Responsive design that adapts to current screen dimensions
+    - Full viewport coverage without cropping
+    - Ensure the image maintains the exact ${aspectRatio} aspect ratio
+    - Portrait must be cut off at knee level (head to knees visible)
+    - Generate image with precise ${imageWidth}x${imageHeight} dimensions`;
 
     console.log('🎨 Gemini 이미지 생성 요청 시작');
     console.log('📝 프롬프트:', prompt.substring(0, 200) + '...');
 
     // 이미지 생성 요청
+    console.log('⚙️ 이미지 생성 설정:', { width: imageWidth, height: imageHeight });
+    
     const result = await model.generateContent(prompt);
     const response = await result.response;
 

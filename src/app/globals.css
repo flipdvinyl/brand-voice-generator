@@ -43,8 +43,9 @@
   
   /* 화면 방향에 따른 폰트 크기 조절 */
   .text-gray-700 {
-    /* 세로가 긴 형태 (portrait)일 때 3vw */
-    font-size: 3vw;
+    /* 세로가 긴 형태 (portrait)일 때 3.5vw */
+    font-size: 3.5vw;
+    line-height: 5vw !important; /* 줄간격 5vw 강제 적용 */
     position: relative;
     z-index: 20; /* 이미지보다 위에 */
     color: rgba(0, 0, 0, 0.8) !important; /* 0,0,0,.8 색상 값 강제 적용 */
@@ -58,10 +59,11 @@
     }
   }
   
-  /* 세로가 긴 형태 (portrait)일 때 3vw */
+  /* 세로가 긴 형태 (portrait)일 때 3.5vw */
   @media (orientation: portrait) {
     .text-gray-700 {
-      font-size: 3vw;
+      font-size: 3.5vw;
+      line-height: 5vw !important; /* 줄간격 5vw 강제 적용 */
       color: rgba(0, 0, 0, 0.8) !important; /* 0,0,0,.8 색상 값 강제 적용 */
     }
   }
@@ -97,14 +99,14 @@
     100% { opacity: 1; }
   }
   
-  /* 이미지 위에 1% 알파값의 흰색 박스 */
+  /* 이미지 위에 20% 알파값의 흰색 박스 */
   .image-overlay-white {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.01); /* 1% 알파값의 흰색 */
+    background-color: rgba(255, 255, 255, 0.2); /* 20% 알파값의 흰색 */
     z-index: 1; /* 이미지 위에 */
   }
   
@@ -137,6 +139,79 @@
     z-index: 100; /* 이미지보다 훨씬 위에 */
   }
   
+  /* 해시태그 폰트 크기 - 본문의 80% */
+  .hashtag {
+    font-size: 2.8vw; /* 3.5vw * 0.8 = 2.8vw */
+    line-height: 4vw; /* 5vw * 0.8 = 4vw */
+  }
+  
+  /* 가로 모드에서 해시태그 폰트 크기 */
+  @media (orientation: landscape) {
+    .hashtag {
+      font-size: 2.4vh; /* 3vh * 0.8 = 2.4vh */
+    }
+  }
+  
+  /* 세로 모드에서 해시태그 폰트 크기 */
+  @media (orientation: portrait) {
+    .hashtag {
+      font-size: 2.8vw; /* 3.5vw * 0.8 = 2.8vw */
+      line-height: 4vw; /* 5vw * 0.8 = 4vw */
+    }
+  }
+  
+  /* 단계 라벨 폰트 크기 - 2vw/2vh */
+  .step-label {
+    font-size: 2vw;
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  /* 가로 모드에서 단계 라벨 폰트 크기 */
+  @media (orientation: landscape) {
+    .step-label {
+      font-size: 2vh;
+    }
+  }
+  
+  /* 세로 모드에서 단계 라벨 폰트 크기 */
+  @media (orientation: portrait) {
+    .step-label {
+      font-size: 2vw;
+    }
+  }
+  
+  /* 헤더 타이틀 폰트 크기 - gray-700의 1.5배 */
+  .header-title {
+    font-size: 5.25vw; /* 3.5vw * 1.5 = 5.25vw */
+  }
+  
+  /* 헤더 설명 폰트 크기 - gray-700과 동일 */
+  .header-description {
+    font-size: 3.5vw;
+  }
+  
+  /* 가로 모드에서 헤더 폰트 크기 */
+  @media (orientation: landscape) {
+    .header-title {
+      font-size: 4.5vh; /* 3vh * 1.5 = 4.5vh */
+    }
+    
+    .header-description {
+      font-size: 3vh;
+    }
+  }
+  
+  /* 세로 모드에서 헤더 폰트 크기 */
+  @media (orientation: portrait) {
+    .header-title {
+      font-size: 5.25vw; /* 3.5vw * 1.5 = 5.25vw */
+    }
+    
+    .header-description {
+      font-size: 3.5vw;
+    }
+  }
+  
   /* container 클래스가 이미지 위에 보이도록 z-index 설정 */
   .container {
     position: relative;
@@ -149,8 +224,10 @@
   }
   
   /* 3단계 브랜드 보이스에서 container 내부의 모든 요소들에 드롭 섀도우 적용 */
-  .container.brand-voice-step * {
-    filter: drop-shadow(0 0 37px rgba(220, 220, 220, 0.5));
+  .container.brand-voice-step .text-gray-700 {
+    filter: drop-shadow(0 0 20px rgba(220, 220, 220, .7));
+    text-shadow: 0 0 37px rgba(220, 220, 220, 1);
+    
   }
   
   /* 특정 요소들은 더 강한 드롭 섀도우 적용 */
@@ -165,6 +242,6 @@
   .container.brand-voice-step button,
   .container.brand-voice-step .btn-primary,
   .container.brand-voice-step .btn-secondary {
-    filter: drop-shadow(0 0 37px rgba(220, 220, 220, 0.5));
+    filter: drop-shadow(0 0 10px rgba(220, 220, 220, 0.5));
   }
 }

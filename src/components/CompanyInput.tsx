@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface CompanyInputProps {
   onSubmit: (companyName: string) => void
@@ -9,6 +9,14 @@ interface CompanyInputProps {
 export default function CompanyInput({ onSubmit }: CompanyInputProps) {
   const [companyName, setCompanyName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // 컴포넌트가 마운트될 때 자동으로 입력 필드에 포커스
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,24 +33,14 @@ export default function CompanyInput({ onSubmit }: CompanyInputProps) {
 
   return (
     <div className="card max-w-2xl mx-auto">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          브랜드 보이스를 생성할 회사를 입력해주세요
-        </h2>
-        <p className="text-gray-600">
-          일본에 있는 회사의 이름을 입력하면 AI가 해당 회사에 대한 정보를 분석하고<br />
-          적합한 브랜드 보이스 캐릭터를 추천해드립니다.
-        </p>
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
-            회사명
-          </label>
+          <p className="text-gray-600 mb-4">
+            브랜드 보이스가 필요한 회사 이름을 알려주세요
+          </p>
           <input
+            ref={inputRef}
             type="text"
-            id="companyName"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder="예: 소니, 도요타, 유니클로..."

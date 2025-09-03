@@ -6,7 +6,7 @@ import TTSPlayer, { TTSPlayerRef } from './TTSPlayer'
 
 interface CompanyInfoProps {
   companyName: string
-  onComplete: (info: string) => void
+  onComplete: (info: string[]) => void
 }
 
 export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProps) {
@@ -148,7 +148,7 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
                         // 충분한 시간 대기 후 다음 단계로 진행 (오디오 정리 완료 보장)
                         setTimeout(() => {
                           console.log('🚀 다음 단계로 진행')
-                          onComplete(companyInfo)
+                          onComplete([companyInfo])
                         }, 300)
                       }}
                       className="btn-secondary"
