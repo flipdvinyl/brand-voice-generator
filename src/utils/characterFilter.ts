@@ -129,43 +129,13 @@ export function prepareSimilarityRankingPrompt(
   priority2: CompleteCharacterVoice[],
   otherHashtags: string[]
 ): string {
-  const allCandidates = [...priority1, ...priority2]
-  
-  // 퍼플렉시티용 간소화된 데이터로 변환
-  const candidateData = allCandidates.map(char => ({
-    name: char.name,
-    description: char.description,
-    age: char.age,
-    gender: char.gender,
-    usecases: char.usecases,
-    styles: char.styles,
-    priority: priority1.includes(char) ? 1 : 2
-  }))
-
-  // 프롬프트 길이 제한을 위해 우선순위 1 캐릭터들만 포함
-  const priority1Data = candidateData.filter(char => char.priority === 1)
-  const priority2Data = candidateData.filter(char => char.priority === 2).slice(0, 20) // 2순위는 최대 20개만
-  
+  // 간소화된 프롬프트 - 웹 URL만 참조
   return `
 해시태그: ${otherHashtags.join(', ')}
 
-우선순위 1 캐릭터들 (${priority1Data.length}개):
-${priority1Data.map(char => 
-  `${char.name} (${char.gender}, ${char.age}): ${char.description}
-  사용사례: ${char.usecases.join(', ')}
-  스타일: ${char.styles.join(', ')}`
-).join('\n\n')}
+캐릭터 데이터베이스: https://brand-voice-generator.vercel.app/api/character-metadata
 
-우선순위 2 캐릭터들 (${priority2Data.length}개):
-${priority2Data.map(char => 
-  `${char.name} (${char.gender}, ${char.age}): ${char.description}
-  사용사례: ${char.usecases.join(', ')}
-  스타일: ${char.styles.join(', ')}`
-).join('\n\n')}
-
-위 해시태그를 바탕으로 가장 적합한 캐릭터 10개를 추천해주세요.
-우선순위 1 캐릭터들을 우선적으로 고려하되, 더 적합한 우선순위 2 캐릭터도 포함할 수 있습니다.
-
+위 해시태그를 바탕으로 캐릭터 데이터베이스에서 가장 적합한 캐릭터 10개를 추천해주세요.
 캐릭터 이름만 10개 나열해주세요:
 `
 }
