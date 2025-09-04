@@ -38,11 +38,7 @@ export default function CharacterRecommendation({
         setLoading(true)
         setError(null)
         
-        const response = await getCharacterRecommendations(
-          companyInfo,
-          brandVoice,
-          hashtags
-        )
+        const response = await getCharacterRecommendations(hashtags)
         
         console.log('퍼플렉시티 추천 결과:', response.recommendedCharacters)
         
@@ -59,7 +55,7 @@ export default function CharacterRecommendation({
     }
 
     fetchRecommendations()
-  }, [companyInfo, brandVoice, hashtags])
+  }, [hashtags])
 
   const handleCharacterSelect = (characterName: string) => {
     setSelectedCharacter(characterName)

@@ -14,8 +14,6 @@ export interface CharacterVoice {
 
 // 캐릭터 추천 요청 타입
 export interface CharacterRecommendationRequest {
-  companyInfo: string
-  brandVoice: string
   hashtags: string[]
 }
 
@@ -36,10 +34,8 @@ export const characterVoiceDB: CharacterVoice[] = completeCharacterVoiceDB.map(c
   thumbnail: char.thumbnail
 }))
 
-// 캐릭터 추천 API 호출
+// 캐릭터 추천 API 호출 (해시태그만 사용)
 export async function getCharacterRecommendations(
-  companyInfo: string,
-  brandVoice: string,
   hashtags: string[]
 ): Promise<CharacterRecommendationResponse> {
   try {
@@ -49,8 +45,6 @@ export async function getCharacterRecommendations(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        companyInfo,
-        brandVoice,
         hashtags,
       }),
     })

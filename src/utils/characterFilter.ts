@@ -22,17 +22,15 @@ export function filterByGenderAndAge(
   return filtered
 }
 
-// 2차 필터링: usecase 기반 우선순위 분류
-export function categorizeByUseCase(
+// 2차 필터링: 해시태그 기반 usecase 우선순위 분류
+export function categorizeByUseCaseFromHashtags(
   characters: CompleteCharacterVoice[],
-  companyInfo: string,
-  brandVoice: string,
   otherHashtags: string[]
 ): {
-  priority1: CompleteCharacterVoice[]  // usecase가 회사에 맞는 캐릭터들
+  priority1: CompleteCharacterVoice[]  // usecase가 해시태그에 맞는 캐릭터들
   priority2: CompleteCharacterVoice[]  // 나머지 캐릭터들
 } {
-  const context = `${companyInfo} ${brandVoice} ${otherHashtags.join(' ')}`.toLowerCase()
+  const hashtagContext = otherHashtags.join(' ').toLowerCase()
   
   const priority1: CompleteCharacterVoice[] = []
   const priority2: CompleteCharacterVoice[] = []
@@ -42,51 +40,74 @@ export function categorizeByUseCase(
       const useCaseLower = useCase.toLowerCase()
       
       // 비즈니스 관련 키워드
-      if (context.includes('비즈니스') || context.includes('business') || context.includes('기업')) {
+      if (hashtagContext.includes('비즈니스') || hashtagContext.includes('business') || 
+          hashtagContext.includes('기업') || hashtagContext.includes('corporate') ||
+          hashtagContext.includes('전문') || hashtagContext.includes('professional')) {
         return useCaseLower.includes('business') || useCaseLower.includes('announcement') || 
                useCaseLower.includes('presentation') || useCaseLower.includes('corporate')
       }
       
       // 엔터테인먼트 관련 키워드
-      if (context.includes('엔터테인먼트') || context.includes('entertainment') || context.includes('재미')) {
+      if (hashtagContext.includes('엔터테인먼트') || hashtagContext.includes('entertainment') || 
+          hashtagContext.includes('재미') || hashtagContext.includes('fun') ||
+          hashtagContext.includes('유머') || hashtagContext.includes('humor')) {
         return useCaseLower.includes('entertainment') || useCaseLower.includes('game') || 
                useCaseLower.includes('acting') || useCaseLower.includes('humor')
       }
       
       // 교육 관련 키워드
-      if (context.includes('교육') || context.includes('education') || context.includes('학습')) {
+      if (hashtagContext.includes('교육') || hashtagContext.includes('education') || 
+          hashtagContext.includes('학습') || hashtagContext.includes('learning') ||
+          hashtagContext.includes('설명') || hashtagContext.includes('explanation')) {
         return useCaseLower.includes('narration') || useCaseLower.includes('audiobook') || 
                useCaseLower.includes('documentary') || useCaseLower.includes('educational')
       }
       
       // 광고 관련 키워드
-      if (context.includes('광고') || context.includes('advertisement') || context.includes('마케팅')) {
+      if (hashtagContext.includes('광고') || hashtagContext.includes('advertisement') || 
+          hashtagContext.includes('마케팅') || hashtagContext.includes('marketing') ||
+          hashtagContext.includes('홍보') || hashtagContext.includes('promotion')) {
         return useCaseLower.includes('advertisement') || useCaseLower.includes('marketing') || 
                useCaseLower.includes('promotion')
       }
       
       // 게임 관련 키워드
-      if (context.includes('게임') || context.includes('game') || context.includes('gaming')) {
+      if (hashtagContext.includes('게임') || hashtagContext.includes('game') || 
+          hashtagContext.includes('gaming') || hashtagContext.includes('플레이')) {
         return useCaseLower.includes('game') || useCaseLower.includes('gaming') || 
                useCaseLower.includes('character')
       }
       
       // 뉴스/보도 관련 키워드
-      if (context.includes('뉴스') || context.includes('news') || context.includes('보도')) {
+      if (hashtagContext.includes('뉴스') || hashtagContext.includes('news') || 
+          hashtagContext.includes('보도') || hashtagContext.includes('reporting') ||
+          hashtagContext.includes('알림') || hashtagContext.includes('announcement')) {
         return useCaseLower.includes('news') || useCaseLower.includes('announcement') || 
                useCaseLower.includes('reporting')
       }
       
       // 고객 서비스 관련 키워드
-      if (context.includes('고객서비스') || context.includes('customer') || context.includes('서비스')) {
+      if (hashtagContext.includes('고객서비스') || hashtagContext.includes('customer') || 
+          hashtagContext.includes('서비스') || hashtagContext.includes('service') ||
+          hashtagContext.includes('상담') || hashtagContext.includes('consultation')) {
         return useCaseLower.includes('customer-service') || useCaseLower.includes('conversational') || 
                useCaseLower.includes('support')
       }
       
       // 스토리텔링 관련 키워드
-      if (context.includes('스토리') || context.includes('story') || context.includes('이야기')) {
+      if (hashtagContext.includes('스토리') || hashtagContext.includes('story') || 
+          hashtagContext.includes('이야기') || hashtagContext.includes('narrative') ||
+          hashtagContext.includes('내레이션') || hashtagContext.includes('narration')) {
         return useCaseLower.includes('storytelling') || useCaseLower.includes('narrative') || 
                useCaseLower.includes('audiobook')
+      }
+      
+      // 신뢰감/안정감 관련 키워드
+      if (hashtagContext.includes('신뢰') || hashtagContext.includes('trust') || 
+          hashtagContext.includes('안정') || hashtagContext.includes('stable') ||
+          hashtagContext.includes('차분') || hashtagContext.includes('calm')) {
+        return useCaseLower.includes('business') || useCaseLower.includes('announcement') || 
+               useCaseLower.includes('professional') || useCaseLower.includes('neutral')
       }
       
       return false
@@ -102,12 +123,10 @@ export function categorizeByUseCase(
   return { priority1, priority2 }
 }
 
-// 3차 필터링: 유사도 기반 랭킹 (퍼플렉시티에게 위임)
+// 3차 필터링: 해시태그 기반 유사도 랭킹 (퍼플렉시티에게 위임)
 export function prepareSimilarityRankingPrompt(
   priority1: CompleteCharacterVoice[],
   priority2: CompleteCharacterVoice[],
-  companyInfo: string,
-  brandVoice: string,
   otherHashtags: string[]
 ): string {
   const allCandidates = [...priority1, ...priority2]
@@ -128,9 +147,7 @@ export function prepareSimilarityRankingPrompt(
   const priority2Data = candidateData.filter(char => char.priority === 2).slice(0, 20) // 2순위는 최대 20개만
   
   return `
-회사 정보: ${companyInfo}
-브랜드 보이스: ${brandVoice}
-추가 해시태그: ${otherHashtags.join(', ')}
+해시태그: ${otherHashtags.join(', ')}
 
 우선순위 1 캐릭터들 (${priority1Data.length}개):
 ${priority1Data.map(char => 
@@ -146,17 +163,15 @@ ${priority2Data.map(char =>
   스타일: ${char.styles.join(', ')}`
 ).join('\n\n')}
 
-위 정보를 바탕으로 브랜드 보이스에 가장 적합한 캐릭터 10개를 추천해주세요.
+위 해시태그를 바탕으로 가장 적합한 캐릭터 10개를 추천해주세요.
 우선순위 1 캐릭터들을 우선적으로 고려하되, 더 적합한 우선순위 2 캐릭터도 포함할 수 있습니다.
 
 캐릭터 이름만 10개 나열해주세요:
 `
 }
 
-// 전체 필터링 파이프라인
+// 전체 필터링 파이프라인 (해시태그만 사용)
 export function createCharacterFilteringPipeline(
-  companyInfo: string,
-  brandVoice: string,
   hashtags: string[]
 ): {
   step1Filtered: CompleteCharacterVoice[]
@@ -174,20 +189,16 @@ export function createCharacterFilteringPipeline(
   // 1차 필터링: 성별과 나이
   const step1Filtered = filterByGenderAndAge(hashtagAnalysis.gender, hashtagAnalysis.age)
 
-  // 2차 필터링: usecase 기반 우선순위 분류
-  const step2Categorized = categorizeByUseCase(
+  // 2차 필터링: 해시태그 기반 usecase 우선순위 분류
+  const step2Categorized = categorizeByUseCaseFromHashtags(
     step1Filtered,
-    companyInfo,
-    brandVoice,
     hashtagAnalysis.otherHashtags
   )
 
-  // 3차 필터링: 유사도 랭킹 프롬프트 생성
+  // 3차 필터링: 해시태그 기반 유사도 랭킹 프롬프트 생성
   const similarityPrompt = prepareSimilarityRankingPrompt(
     step2Categorized.priority1,
     step2Categorized.priority2,
-    companyInfo,
-    brandVoice,
     hashtagAnalysis.otherHashtags
   )
 
