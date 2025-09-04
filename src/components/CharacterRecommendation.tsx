@@ -83,7 +83,7 @@ export default function CharacterRecommendation({
   return (
     <div className="card max-w-6xl mx-auto">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
           수퍼톤 캐릭터 추천
         </h2>
         <p className="text-gray-600">
@@ -147,24 +147,7 @@ export default function CharacterRecommendation({
         ))}
       </div>
 
-      <div className="text-center">
-        <button
-          onClick={handleNext}
-          disabled={!selectedCharacter}
-          className="btn-primary px-8 py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {selectedCharacter ? '유즈케이스 선택하기' : '캐릭터를 선택해주세요'}
-        </button>
-      </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h3 className="font-medium text-blue-800 mb-2">💡 캐릭터 선택 가이드</h3>
-        <ul className="text-sm text-blue-700 space-y-1">
-          <li>• 브랜드 보이스와 가장 잘 맞는 캐릭터를 선택해주세요</li>
-          <li>• 성별, 나이, 유즈케이스를 고려하여 선택하세요</li>
-          <li>• 선택한 캐릭터는 다음 단계에서 활용됩니다</li>
-        </ul>
-      </div>
     </div>
   )
 }

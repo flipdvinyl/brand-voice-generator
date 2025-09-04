@@ -9,13 +9,15 @@ interface BrandVoiceRecommendationProps {
   companyInfo: string
   onComplete: (brandVoice: string[], hashtags: string[]) => void
   onImageGenerated: (imageUrl: string | null) => void
+  imageGenerationEnabled: boolean
 }
 
 export default function BrandVoiceRecommendation({ 
   companyName, 
   companyInfo, 
   onComplete,
-  onImageGenerated
+  onImageGenerated,
+  imageGenerationEnabled
 }: BrandVoiceRecommendationProps) {
   const [brandVoice, setBrandVoice] = useState('')
   const [hashtags, setHashtags] = useState<string[]>([])
@@ -60,12 +62,12 @@ export default function BrandVoiceRecommendation({
     }
   }, [brandVoice, isLoading, error])
 
-  // 브랜드 보이스가 생성되면 자동으로 이미지 생성
+  // 브랜드 보이스가 생성되면 자동으로 이미지 생성 (imageGenerationEnabled가 true일 때만)
   useEffect(() => {
-    if (brandVoice && !isGeneratingImage && !generatedImage) {
+    if (imageGenerationEnabled && brandVoice && !isGeneratingImage && !generatedImage) {
       generateImage()
     }
-  }, [brandVoice])
+  }, [brandVoice, imageGenerationEnabled])
 
   const fetchBrandVoice = async () => {
     try {
@@ -82,28 +84,28 @@ export default function BrandVoiceRecommendation({
 - 회사명: ${companyName}
 
 **브랜드 보이스 요청사항:**
-브랜드 보이스는 사람 형태의 캐릭터로 추천해줘. 사람의 페르소나를 500자 정도로 제안해줘. 성격과 특징을 묘사해줘. 접두, 접미 미사여구 뺴고 정보만 간단히 존댓말로 출력.
-
-**대표 제품군 파악:**
-위 회사 소개를 바탕으로 ${companyName}회사의 대표 제품군(복수개)을 파악하고, 이를 브랜드 보이스 캐릭터의 특징과 연관지어 설명해줘.
+브랜드 보이스는 사람 형태의 캐릭터로 추천해줘. 사람의 페르소나를 500자 이내로 제안해줘. 성격과 특징을 묘사해줘. 접두, 접미 미사여구 뺴고 정보만 간단히 존댓말로 출력.
+위 ${companyInfo}와 ${companyName}회사의 대표 제품군(복수개)을 파악하고, 이를 바탕으로 브랜드 보이스 캐릭터를 제안해줘. 이 제품군은 본문에 별도 명시할 필요없어.
+- [1], [2], [3] 같은 각주나 참조 번호 제거
+- (괄호) 형태의 설명이나 부가 정보 제거
+- '-'대시나, '**'강조 형태 제거
 
 **해시태그 생성 요청:**
 해당 캐릭터를 나타나는 10개의 해시태그를 다음 순서로 정확히 생성해줘:
-
-1. #성별 (예: #남성, #여성)
-2. #나이대 (예: #20대, #30대후반, #40대초반)
-3. #성격 (예: #전문가, #친근함, #신뢰감)
-4. #목소리톤 (예: #차분하고안정감있는톤, #따뜻하고친근한목소리톤, #전문적이고신뢰감있는톤) - 최소 10자 이상
-5-10. 나머지 6개는 ${companyName}회사의 대표 제품군과 사업 영역을 기반으로 한 구체적인 캐릭터 특징을 나타내는 해시태그로, 각각 10자 이내로 작성해주세요. 
-
-**5-10번 해시태그 작성 가이드:**
+1번 #성별을 명시해줘 (예: #남성, #여성, #중성)
+2번 #나이대 (예: #20대, #30대후반, #40대초반)
+3번 #성격 (예: #전문가, #친근함, #신뢰감)
+4번 #목소리톤 (예: #차분하고안정감있는톤, #따뜻하고친근한목소리톤, #전문적이고신뢰감있는톤) - 최소 10자 이상
+5-10번. 나머지 6개는 ${companyName}회사의 대표 제품군과 사업 영역을 기반으로 한 구체적인 캐릭터 특징을 나타내는 해시태그로, 각각 10자 이내로 작성해주세요. 
+5-10번 해시태그 작성 가이드:
 - 회사의 대표 제품군(복수개)을 파악하여 각 제품군별 특성을 반영
 - 구체적인 업무 상황이나 고객과의 상호작용을 묘사
 - 제품의 특징, 품질, 서비스 방식 등을 캐릭터의 능력과 연결
-- **중요**: #해시태그1, #해시태그2 같은 번호 형태는 절대 사용하지 말고, 실제 의미있는 내용만 포함
 - 예시: #카메라정밀함반영설명, #게임즐거움전달소통
 
-정확히 10개를 #실제해시태그내용 형태로 출력해줘. #해시태그1, #해시태그2 같은 번호 형태는 사용하지 말고, 실제 의미있는 내용만 포함해주세요.`
+정확히 10개를 #실제해시태그내용 형태로 출력해줘. 
+#해시태그1, #해시태그2 같은 번호 형태는 사용하지 말고, '해시태그' 같은 제목도 필요 없어. 단순히 해시태그만 10개 표시해줘.
+`
       })
 
       const info = response.data.info
@@ -111,6 +113,8 @@ export default function BrandVoiceRecommendation({
       // 해시태그 추출 및 필터링
       const hashtagMatches = info.match(/#[^\s#]+/g) || []
       console.log('🔍 원본 추출된 해시태그:', hashtagMatches)
+      console.log('🔍 첫 번째 해시태그:', hashtagMatches[0])
+      console.log('🔍 첫 번째 해시태그 길이:', hashtagMatches[0]?.length)
       
       // #해시태그n 형태 필터링 및 유효한 해시태그만 추출
       const validHashtags = hashtagMatches.filter((hashtag: string) => {
@@ -124,8 +128,8 @@ export default function BrandVoiceRecommendation({
           console.log(`❌ 필터링된 해시태그: ${hashtag}`)
           return false
         }
-        // 너무 짧은 해시태그 제외 (3자 이하)
-        if (hashtag.length <= 4) {
+        // 너무 짧은 해시태그 제외 (2자 이하, 성별 해시태그는 예외)
+        if (hashtag.length <= 3 && !['#남성', '#여성', '#중성'].includes(hashtag)) {
           console.log(`❌ 너무 짧은 해시태그: ${hashtag}`)
           return false
         }
@@ -137,9 +141,10 @@ export default function BrandVoiceRecommendation({
       // 해시태그 제거한 텍스트
       const cleanText = info.replace(/#[^\s#]+/g, '').trim()
       
-      setBrandVoice(cleanText)
-      setHashtags(validHashtags)
-      // 사용자가 "다음" 버튼을 클릭해야 다음 단계로 진행
+             setBrandVoice(cleanText)
+       setHashtags(validHashtags)
+       // 부모 컴포넌트에 완료 알림 (하지만 자동으로 다음 단계로 넘어가지 않음)
+       onComplete([cleanText], validHashtags)
     } catch (error) {
       console.error('Error generating brand voice:', error)
       setError('브랜드 보이스 생성 중 오류가 발생했습니다.')
@@ -209,7 +214,7 @@ export default function BrandVoiceRecommendation({
   if (isLoading) {
     return (
       <div className="card p-6">
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center loading-container">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           <span className="ml-3">브랜드 보이스를 생성하는 중...</span>
         </div>
@@ -230,10 +235,12 @@ export default function BrandVoiceRecommendation({
 
   return (
     <div className="card p-6">
-      <h2 className="text-xl font-semibold mb-4">브랜드 보이스 추천</h2>
+      <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }} dangerouslySetInnerHTML={{
+        __html: `${companyName}에 어울리는<br>브랜드 보이스를 제안해요`
+      }}></h2>
       
       <div className="mb-6">
-        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4">
+        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4 brand-voice-content">
           {brandVoice}
         </div>
         
@@ -263,15 +270,15 @@ export default function BrandVoiceRecommendation({
           </div>
         )}
 
-        {/* 이미지 생성 상태 표시 */}
-        {isGeneratingImage && (
-          <div className="flex items-center justify-center py-8">
+        {/* 이미지 생성 상태 표시 (imageGenerationEnabled가 true일 때만) */}
+        {imageGenerationEnabled && isGeneratingImage && (
+          <div className="flex items-center justify-center py-8 loading-container">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <span className="ml-3 text-gray-600">AI가 브랜드 보이스 캐릭터 이미지를 생성하는 중...</span>
           </div>
         )}
         
-        {imageError && (
+        {imageGenerationEnabled && imageError && (
           <div className="text-red-600 text-center py-4">
             {imageError}
             <button 
@@ -284,35 +291,14 @@ export default function BrandVoiceRecommendation({
         )}
       </div>
       
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center hidden">
         <TTSPlayer 
           ref={ttsPlayerRef}
           text={brandVoice}
           onPlayStart={() => setIsPlaying(true)}
           onPlayEnd={() => setIsPlaying(false)}
-          className="flex-1 mr-4"
+          className="flex-1"
         />
-        
-        <button
-          onClick={() => {
-            console.log('🚫 다음 버튼 클릭 - TTS 완전 초기화 시작')
-            // TTS 완전 초기화 (CompanyInfo와 동일한 패턴)
-            if (ttsPlayerRef.current) {
-              ttsPlayerRef.current.resetAllTTS()
-              console.log('✅ TTS 완전 초기화 완료')
-            } else {
-              console.log('❌ TTSPlayer ref가 null입니다!')
-            }
-            // 충분한 시간 대기 후 다음 단계로 진행 (오디오 정리 완료 보장)
-            setTimeout(() => {
-              console.log('🚀 다음 단계로 진행')
-              onComplete([brandVoice], hashtags)
-            }, 300)
-          }}
-          className="btn-secondary"
-        >
-          다음
-        </button>
       </div>
     </div>
   )

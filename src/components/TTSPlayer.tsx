@@ -65,6 +65,56 @@ export const splitTextForTTS = (text: string): string[] => {
   return finalChunks
 }
 
+// 전역적으로 현재 재생 중인 오디오를 추적
+let globalCurrentAudio: HTMLAudioElement | null = null
+
+// TTS 완전 초기화 함수 (외부에서 사용 가능)
+export const resetAllTTSGlobal = () => {
+  console.log('🔄 TTSPlayer의 resetAllTTSGlobal 함수 호출')
+  
+  try {
+    // 1. 전역 currentAudio 즉시 중지
+    if (globalCurrentAudio) {
+      console.log('🚫 전역 currentAudio 즉시 중지 중...')
+      globalCurrentAudio.pause()
+      globalCurrentAudio.currentTime = 0
+      globalCurrentAudio.volume = 0
+      globalCurrentAudio.muted = true
+      globalCurrentAudio.src = ''
+      globalCurrentAudio = null
+      console.log('✅ 전역 currentAudio 중지 완료')
+    }
+    
+    // 2. 모든 오디오 요소 찾아서 중지
+    const allAudios = document.querySelectorAll('audio')
+    allAudios.forEach((audio, index) => {
+      console.log(`🚫 오디오 요소 ${index + 1} 중지 중...`)
+      audio.pause()
+      audio.currentTime = 0
+      audio.volume = 0
+      audio.muted = true
+      audio.src = ''
+    })
+    console.log(`✅ 총 ${allAudios.length}개 오디오 요소 중지 완료`)
+    
+    // 3. 모든 TTSPlayer의 resetAllTTS 함수 호출
+    const ttsPlayers = document.querySelectorAll('[data-tts-button]')
+    ttsPlayers.forEach((button, index) => {
+      console.log(`🔄 TTSPlayer ${index + 1} 초기화 중...`)
+      if (button instanceof HTMLButtonElement) {
+        // 재생 중인 경우에만 클릭 (중지 효과)
+        if (button.textContent?.includes('재생 중')) {
+          button.click()
+        }
+      }
+    })
+    
+    console.log('✅ TTSPlayer의 resetAllTTSGlobal 완료')
+  } catch (error) {
+    console.error('❌ TTSPlayer의 resetAllTTSGlobal 오류:', error)
+  }
+}
+
 // 첫 번째 청크를 미리 생성하여 버퍼링하는 함수
 export const prepareFirstChunk = async (text: string): Promise<HTMLAudioElement | null> => {
   try {
@@ -647,9 +697,10 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
             const firstAudio = new Audio(firstResponse.data.audioUrl)
             console.log('🎵 첫 번째 TTS 청크 생성 완료, 즉시 재생 시작')
             
-            // 🚨 중요: currentAudio 상태에 저장 (중지 시 찾기 위해)
+            // 🚨 중요: currentAudio 상태와 전역 변수에 저장 (중지 시 찾기 위해)
             setCurrentAudio(firstAudio)
-            console.log('🎵 firstAudio를 currentAudio 상태에 저장 완료')
+            globalCurrentAudio = firstAudio
+            console.log('🎵 firstAudio를 currentAudio 상태와 전역 변수에 저장 완료')
             
             // 첫 번째 청크 즉시 재생
             await new Promise<void>((resolve, reject) => {
@@ -661,12 +712,14 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
               firstAudio.onended = () => {
                 console.log('🎵 첫 번째 청크 재생 완료')
                 setCurrentAudio(null)  // 재생 완료 시 null로 설정
+                globalCurrentAudio = null  // 전역 변수도 null로 설정
                 resolve()
               }
               
               firstAudio.onerror = () => {
                 console.error('🎵 첫 번째 청크 재생 오류')
                 setCurrentAudio(null)  // 오류 시 null로 설정
+                globalCurrentAudio = null  // 전역 변수도 null로 설정
                 reject(new Error('첫 번째 청크 재생 오류'))
               }
               
@@ -719,6 +772,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
               
               // 현재 재생 중인 오디오 설정
               setCurrentAudio(audio)
+              globalCurrentAudio = audio
               
               // 현재 청크 재생 완료를 기다리는 Promise
               const playChunk = new Promise<void>((resolve, reject) => {
@@ -738,6 +792,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
                 audio.onended = () => {
                   console.log(`🎵 나머지 청크 ${i + 1} 재생 완료`)
                   setCurrentAudio(null)
+                  globalCurrentAudio = null
                   resolve()
                 }
                 
@@ -745,6 +800,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
                 audio.onerror = () => {
                   console.error(`🎵 나머지 청크 ${i + 1} 재생 오류`)
                   setCurrentAudio(null)
+                  globalCurrentAudio = null
                   reject(new Error(`나머지 청크 ${i + 1} 재생 오류`))
                 }
                 
@@ -953,6 +1009,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
   return (
     <div className={className}>
       <button
+        data-tts-button
         onClick={() => playTTS(text)}
         disabled={isPlaying}
         className={`btn-primary ${isPlaying ? 'opacity-50 cursor-not-allowed' : ''}`}

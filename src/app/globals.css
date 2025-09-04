@@ -21,7 +21,7 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-primary-600 hover:bg-primary-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
     position: relative;
     z-index: 20; /* 이미지보다 위에 */
   }
@@ -210,6 +210,37 @@
     .header-description {
       font-size: 3.5vw;
     }
+  }
+
+  /* 회사명 입력 안내 텍스트 스타일 */
+  .company-input-text {
+    font-size: 10vw;
+    font-weight: bold;
+    line-height: 13vw !important;
+  }
+
+  /* 가로 모드에서 회사명 입력 안내 텍스트 */
+  @media (orientation: landscape) {
+    .company-input-text {
+      font-size: 10vh;
+      line-height: 13vh !important;
+    }
+  }
+
+  /* 회사명 입력 필드 스타일 */
+  .company-input-field {
+    font-size: 300%;
+  }
+
+  /* mb-4 클래스 오버라이드 */
+  .mb-4 {
+    margin-bottom: 5rem !important;
+  }
+
+  /* 로딩 화면 전체 스케일 확대 */
+  .loading-container {
+    transform: scale(3);
+    transform-origin: center;
   }
   
   /* container 클래스가 이미지 위에 보이도록 z-index 설정 */

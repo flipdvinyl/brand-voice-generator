@@ -37,7 +37,7 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
                         // Perplexity API 호출
                   const response = await axios.post('/api/perplexity', {
                     companyName,
-                    prompt: `### ${companyName} 회사에 대해서 검색하고 알려줘. 일본에 있는 회사야. 회사의 역사, 사업영역, 이미지(브랜드, 슬로건 등) 약 500자. 
+                    prompt: `### ${companyName} 회사에 대해서 검색하고 알려줘. 일본에 있는 회사야. 회사의 역사, 사업영역과 대표 제품, 이미지(브랜드, 슬로건 등), 최근 마케팅, 캠페인, 유명한 출시제품. 550자 넘지 않도록. 
 
 중요: 
 - 접두, 접미 미사여구 제거
@@ -45,7 +45,9 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
 - (괄호) 형태의 설명이나 부가 정보 제거
 - 순수한 회사 정보만 존댓말로 출력
 - 마크다운 형식이나 특수 기호 사용 금지
-- 영어 단어나 외래어는 한글로 번역하여 사용`
+- 영어 단어나 외래어는 한글로 번역하여 사용
+- 최근 마케팅, 캠페인, 유명한 출시제품이 없다면 본문에 언급할 필요 없음
+`
                   })
 
       const info = response.data.info
@@ -55,6 +57,9 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
       console.log('=======================')
       
                         setCompanyInfo(info)
+                  
+                  // 부모 컴포넌트에 완료 알림 (하지만 자동으로 다음 단계로 넘어가지 않음)
+                  onComplete([info])
                   
                   // TTS 재생 시작 (TTSPlayer가 마운트된 후)
                   console.log('🎵 TTS 재생 시작...')
@@ -100,9 +105,9 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
   if (isLoading) {
     return (
       <div className="card p-6">
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center loading-container">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-3">회사 정보를 가져오는 중...</span>
+          <span className="ml-3">회사에 대해 공부하는 중이에요</span>
         </div>
       </div>
     )
@@ -118,43 +123,22 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
 
   return (
     <div className="card p-6">
-      <h2 className="text-xl font-semibold mb-4">회사 정보</h2>
+      <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>{companyName}에 대해 찾아 봤어요</h2>
       
       <div className="mb-6">
-        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap company-info-content">
           {companyInfo}
         </div>
       </div>
       
-      <div className="flex justify-between items-center">
-                            <TTSPlayer 
-                      ref={ttsPlayerRef}
-                      text={companyInfo}
-                      onPlayStart={() => setIsPlaying(true)}
-                      onPlayEnd={() => setIsPlaying(false)}
-                      className="flex-1 mr-4"
-                    />
-        
-                            <button
-                      onClick={() => {
-                        console.log('🚫 다음 버튼 클릭 - TTS 완전 초기화 시작')
-                        // TTS 완전 초기화
-                        if (ttsPlayerRef.current) {
-                          ttsPlayerRef.current.resetAllTTS()
-                          console.log('✅ TTS 완전 초기화 완료')
-                        } else {
-                          console.log('❌ TTSPlayer ref가 없음')
-                        }
-                        // 충분한 시간 대기 후 다음 단계로 진행 (오디오 정리 완료 보장)
-                        setTimeout(() => {
-                          console.log('🚀 다음 단계로 진행')
-                          onComplete([companyInfo])
-                        }, 300)
-                      }}
-                      className="btn-secondary"
-                    >
-                      다음
-                    </button>
+      <div className="flex justify-between items-center hidden">
+        <TTSPlayer 
+          ref={ttsPlayerRef}
+          text={companyInfo}
+          onPlayStart={() => setIsPlaying(true)}
+          onPlayEnd={() => setIsPlaying(false)}
+          className="flex-1 mr-4"
+        />
       </div>
     </div>
   )

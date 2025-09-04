@@ -13,8 +13,59 @@ export default function CompanyInput({ onSubmit }: CompanyInputProps) {
 
   // 컴포넌트가 마운트될 때 자동으로 입력 필드에 포커스
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus()
+    // 여러 방법으로 포커스 시도
+    const focusInput = () => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+        // 포커스가 제대로 되었는지 확인
+        if (document.activeElement !== inputRef.current) {
+          // 포커스가 안 되었다면 다시 시도
+          setTimeout(() => {
+            inputRef.current?.focus()
+          }, 50)
+        }
+      }
+    }
+
+    // 즉시 포커스 시도
+    focusInput()
+    
+    // DOM이 완전히 렌더링된 후 다시 한번 포커스 시도
+    setTimeout(focusInput, 100)
+    
+    // 추가로 한번 더 시도 (브라우저별 차이 대응)
+    setTimeout(focusInput, 300)
+  }, [])
+
+  // 페이지 클릭 시 항상 입력 필드에 포커스
+  useEffect(() => {
+    const handlePageClick = () => {
+      if (inputRef.current) {
+        // 약간의 지연을 두어 다른 클릭 이벤트가 처리된 후 포커스
+        setTimeout(() => {
+          inputRef.current?.focus()
+        }, 100)
+      }
+    }
+
+    const handleWindowFocus = () => {
+      if (inputRef.current && document.activeElement !== inputRef.current) {
+        setTimeout(() => {
+          inputRef.current?.focus()
+        }, 50)
+      }
+    }
+
+    // 페이지 전체에 클릭 이벤트 리스너 추가
+    document.addEventListener('click', handlePageClick)
+    
+    // 윈도우 포커스 시에도 입력 필드에 포커스
+    window.addEventListener('focus', handleWindowFocus)
+    
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      document.removeEventListener('click', handlePageClick)
+      window.removeEventListener('focus', handleWindowFocus)
     }
   }, [])
 
@@ -32,47 +83,39 @@ export default function CompanyInput({ onSubmit }: CompanyInputProps) {
   }
 
   return (
-    <div className="card max-w-2xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="card max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-6 text-center">
         <div>
-          <p className="text-gray-600 mb-4">
-            브랜드 보이스가 필요한 회사 이름을 알려주세요
+          <p className="text-gray-700 mb-4 text-center company-input-text" dangerouslySetInnerHTML={{
+            __html: "우리 회사의<br>브랜드 보이스가<br>궁금하다면?<span style=\"display:block; height:0.5em;\"></span>회사 이름을<br>알려주세요-"
+          }}>
           </p>
           <input
             ref={inputRef}
             type="text"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            placeholder="예: 소니, 도요타, 유니클로..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            placeholder="키링을 태그해 주세요"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:outline-none text-center company-input-field"
             required
+            autoFocus
+            onBlur={(e) => {
+              // blur 이벤트 발생 시 즉시 다시 포커스
+              setTimeout(() => {
+                e.target.focus()
+              }, 0)
+            }}
+            onFocus={(e) => {
+              // 포커스 시 커서를 텍스트 끝으로 이동
+              e.target.setSelectionRange(e.target.value.length, e.target.value.length)
+            }}
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={!companyName.trim() || isLoading}
-          className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoading ? (
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              분석 중...
-            </div>
-          ) : (
-            '다음 단계로'
-          )}
-        </button>
+
       </form>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h3 className="font-medium text-blue-800 mb-2">💡 팁</h3>
-        <ul className="text-sm text-blue-700 space-y-1">
-          <li>• 정확한 회사명을 입력해주세요</li>
-          <li>• 일본에 본사가 있는 회사여야 합니다</li>
-          <li>• AI가 회사의 역사, 사업영역, 브랜드 이미지를 분석합니다</li>
-        </ul>
-      </div>
+
     </div>
   )
 }

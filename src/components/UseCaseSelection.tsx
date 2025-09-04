@@ -64,7 +64,7 @@ export default function UseCaseSelection({ companyName, onReset }: UseCaseSelect
   return (
     <div className="card max-w-6xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
           브랜드 보이스 활용 유즈케이스 선택
         </h2>
         <p className="text-gray-600">
@@ -105,70 +105,26 @@ export default function UseCaseSelection({ companyName, onReset }: UseCaseSelect
         ))}
       </div>
 
-      <div className="text-center space-y-4">
-        {selectedUseCases.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              선택된 유즈케이스 ({selectedUseCases.length}개)
-            </h3>
-            <div className="flex flex-wrap justify-center gap-2">
-              {selectedUseCases.map((useCaseId) => {
-                const useCase = useCases.find(uc => uc.id === useCaseId)
-                return (
-                  <span
-                    key={useCaseId}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800"
-                  >
-                    {useCase?.icon} {useCase?.title}
-                  </span>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={handleComplete}
-            disabled={selectedUseCases.length === 0}
-            className="btn-primary px-8 py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            브랜드 보이스 생성 완료
-          </button>
-          
-          <button
-            onClick={onReset}
-            className="btn-secondary px-6 py-3 text-lg"
-          >
-            처음부터 다시 시작
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
-        <h3 className="font-semibold text-gray-800 mb-3 text-center">
-          🎉 브랜드 보이스 생성 완료!
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-          <div>
-            <h4 className="font-medium mb-2">✅ 완료된 작업</h4>
-            <ul className="space-y-1">
-              <li>• 회사 정보 분석 및 요약</li>
-              <li>• 브랜드 보이스 캐릭터 추천</li>
-              <li>• 수퍼톤 캐릭터 매칭</li>
-              <li>• 유즈케이스 선택</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-2">🚀 다음 단계</h4>
-            <ul className="space-y-1">
-              <li>• 선택된 유즈케이스별 음성 생성</li>
-              <li>• 실제 프로젝트에 적용</li>
-              <li>• 지속적인 브랜드 보이스 관리</li>
-            </ul>
+      {selectedUseCases.length > 0 && (
+        <div className="text-center mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            선택된 유즈케이스 ({selectedUseCases.length}개)
+          </h3>
+          <div className="flex flex-wrap justify-center gap-2">
+            {selectedUseCases.map((useCaseId) => {
+              const useCase = useCases.find(uc => uc.id === useCaseId)
+              return (
+                <span
+                  key={useCaseId}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800"
+                >
+                  {useCase?.icon} {useCase?.title}
+                </span>
+              )
+            })}
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

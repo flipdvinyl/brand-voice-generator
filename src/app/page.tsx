@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CompanyInput from '@/components/CompanyInput'
 import CompanyInfo from '@/components/CompanyInfo'
 import BrandVoiceRecommendation from '@/components/BrandVoiceRecommendation'
 import CharacterRecommendation from '@/components/CharacterRecommendation'
 import UseCaseSelection from '@/components/UseCaseSelection'
+import { resetAllTTSGlobal } from '@/components/TTSPlayer'
 
 export type CompanyData = {
   name: string
@@ -25,6 +26,12 @@ export type Character = {
 }
 
 export default function Home() {
+  // 이미지 생성 기능 제어 전역 변수
+  const IMAGE_GENERATION_ENABLED = false // true: 이미지 생성 기능 켜기, false: 이미지 생성 기능 끄기
+  
+  // 하단 플로팅 영역 높이
+  const FLOATING_BOTTOM_HEIGHT = 200 // px
+  
   const [currentStep, setCurrentStep] = useState(1)
   const [companyData, setCompanyData] = useState<CompanyData>({
     name: '',
@@ -34,12 +41,55 @@ export default function Home() {
   })
   const [brandVoiceImage, setBrandVoiceImage] = useState<string | null>(null)
   
-  // TTS 초기화 함수
-  const resetAllTTS = () => {
-    console.log('🔄 메인 페이지에서 TTS 완전 초기화 호출')
-    // 모든 TTS 관련 상태를 초기화
-    // 각 컴포넌트에서 TTSPlayer ref를 통해 resetAllTTS 호출
-  }
+
+
+  // 섹션이 변경될 때마다 TTS 자동 초기화
+  useEffect(() => {
+    console.log(`🔄 섹션 변경 감지: ${currentStep}단계`)
+    // 약간의 지연을 두어 컴포넌트가 마운트된 후 TTS 초기화
+    const timer = setTimeout(() => {
+      resetAllTTSGlobal()
+    }, 100)
+    
+    return () => clearTimeout(timer)
+  }, [currentStep])
+
+  // Enter 키 이벤트 처리
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        // 현재 단계에 따라 다음 단계로 이동
+        switch (currentStep) {
+          case 1:
+            // 1단계: 회사명 입력 - Enter 키는 이미 CompanyInput에서 처리됨
+            break
+          case 2:
+            // 2단계: 회사 정보 - 다음 단계로 이동
+            if (companyData.info && companyData.info.length > 0) {
+              setCurrentStep(3)
+            }
+            break
+          case 3:
+            // 3단계: 브랜드 보이스 - 다음 단계로 이동
+            if (companyData.brandVoice && companyData.brandVoice.length > 0) {
+              setCurrentStep(4)
+            }
+            break
+          case 4:
+            // 4단계: 캐릭터 추천 - 다음 단계로 이동
+            setCurrentStep(5)
+            break
+          case 5:
+            // 5단계: 유즈케이스 선택 - 완료 처리
+            // 여기서는 특별한 처리가 필요하지 않음
+            break
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyPress)
+    return () => document.removeEventListener('keydown', handleKeyPress)
+  }, [currentStep, companyData])
 
   const handleCompanySubmit = (companyName: string) => {
     console.log('🔄 1단계 → 2단계 전환, TTS 초기화 필요')
@@ -48,15 +98,15 @@ export default function Home() {
   }
 
   const handleCompanyInfoComplete = (info: string[]) => {
-    console.log('🔄 2단계 → 3단계 전환, TTS 초기화 필요')
+    console.log('🔄 2단계 완료, 데이터 저장만 함 (자동 전환 안함)')
     setCompanyData(prev => ({ ...prev, info }))
-    setCurrentStep(3)
+    // 자동으로 다음 단계로 넘어가지 않음 - 사용자가 Enter 키나 버튼을 눌러야 함
   }
 
   const handleBrandVoiceComplete = (brandVoice: string[], hashtags: string[]) => {
-    console.log('🔄 3단계 → 4단계 전환, TTS 초기화 필요')
+    console.log('🔄 3단계 완료, 데이터 저장만 함 (자동 전환 안함)')
     setCompanyData(prev => ({ ...prev, brandVoice, hashtags }))
-    setCurrentStep(4)
+    // 자동으로 다음 단계로 넘어가지 않음 - 사용자가 Enter 키나 버튼을 눌러야 함
   }
 
   const handleCharacterComplete = () => {
@@ -122,7 +172,7 @@ export default function Home() {
       <div className={`container mx-auto px-4 py-8 ${currentStep === 3 ? 'brand-voice-step' : ''}`}>
         {/* Header */}
         <div className="text-center" style={{ margin: '4vh 0 2vh' }}>
-          <h1 className="header-title font-bold mb-2" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
+          <h1 className="header-title mb-2" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
             사장님! 우리도 이제 목소리가 생겼어요!
           </h1>
           <p className="header-description" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
@@ -133,21 +183,25 @@ export default function Home() {
         {/* Progress Bar */}
                   <div className="mb-8">
             <div className="relative">
-              {/* 연결선 배경 */}
-              <div className="absolute top-7 left-0 right-0 h-2 bg-gray-300 rounded-full z-0" style={{ width: 'calc(100% - 10rem)', margin: '0 5rem' }}></div>
-              
-              {/* 활성화된 연결선 */}
-              <div className="absolute top-7 left-0 h-2 bg-primary-600 rounded-full transition-all duration-300 z-0" 
+              {/* 연결선 배경 - 1번과 5번 원형 버튼 중심점 사이 */}
+              <div className="absolute top-7 h-2 bg-gray-300 rounded-full z-0" 
                    style={{ 
-                     width: currentStep === 1 ? '0%' : 
-                            currentStep === 2 ? '25%' : 
-                            currentStep === 3 ? '50%' : 
-                            currentStep === 4 ? '75%' : '100%',
-                     margin: '0 5rem'
+                     left: 'calc(50% - 12rem - 12rem)', // 1번 버튼 중심에서 시작 (25% 왼쪽 이동)
+                     width: '48rem' // 1번과 5번 버튼 중심점 사이 거리
+                   }}></div>
+              
+              {/* 활성화된 연결선 - 각 단계별로 정확한 위치 계산 */}
+              <div className="absolute top-7 h-2 bg-primary-600 rounded-full transition-all duration-300 z-0" 
+                   style={{ 
+                     left: 'calc(50% - 12rem - 12rem)', // 1번 버튼 중심에서 시작 (25% 왼쪽 이동)
+                     width: currentStep === 1 ? '0rem' : 
+                            currentStep === 2 ? '12rem' : 
+                            currentStep === 3 ? '24rem' : 
+                            currentStep === 4 ? '36rem' : '48rem'
                    }}></div>
               
               {/* 단계별 원형 숫자와 텍스트 */}
-              <div className="grid grid-cols-5 gap-8 items-center justify-center relative z-20" style={{ width: 'fit-content', margin: '0 auto' }}>
+              <div className="grid grid-cols-5 gap-6 items-center justify-center relative z-20" style={{ width: 'fit-content', margin: '0 auto' }}>
                 {[1, 2, 3, 4, 5].map((step) => (
                   <div key={step} className="flex flex-col items-center">
                     <div
@@ -189,7 +243,13 @@ export default function Home() {
           </div>
 
         {/* Content */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto" style={{ 
+          height: `calc(100vh - ${FLOATING_BOTTOM_HEIGHT}px)`, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          paddingBottom: `${FLOATING_BOTTOM_HEIGHT * 2}px`
+        }}>
           {currentStep === 1 && (
             <CompanyInput onSubmit={handleCompanySubmit} />
           )}
@@ -201,14 +261,15 @@ export default function Home() {
             />
           )}
           
-          {currentStep === 3 && (
-            <BrandVoiceRecommendation
-              companyName={companyData.name}
-              companyInfo={companyData.info.join('\n')}
-              onComplete={handleBrandVoiceComplete}
-              onImageGenerated={setBrandVoiceImage}
-            />
-          )}
+                      {currentStep === 3 && (
+              <BrandVoiceRecommendation
+                companyName={companyData.name}
+                companyInfo={companyData.info.join('\n')}
+                onComplete={handleBrandVoiceComplete}
+                onImageGenerated={setBrandVoiceImage}
+                imageGenerationEnabled={IMAGE_GENERATION_ENABLED}
+              />
+            )}
           
           {currentStep === 4 && (
             <CharacterRecommendation
@@ -226,17 +287,109 @@ export default function Home() {
           )}
         </div>
 
-        {/* Reset Button */}
-        {currentStep > 1 && (
-          <div className="text-center mt-8">
-            <button
-              onClick={resetToStart}
-              className="btn-secondary"
-            >
-              처음부터 다시 시작
-            </button>
+        {/* 하단 플로팅 버튼 영역 */}
+        <div className="fixed bottom-0 left-0 right-0 z-[9999]" style={{ 
+          height: `${FLOATING_BOTTOM_HEIGHT}px`, 
+          backgroundColor: 'rgb(220, 220, 220)', 
+          boxShadow: '0 0 200px rgba(0, 0, 0, 0.1)' 
+        }}>
+          <div className="max-w-4xl mx-auto px-4 h-full flex items-center justify-center">
+            {currentStep === 1 && (
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    const input = document.querySelector('input[type="text"]') as HTMLInputElement
+                    if (input && input.value.trim()) {
+                      handleCompanySubmit(input.value.trim())
+                    }
+                  }}
+                  className="btn-primary text-gray-700"
+                  style={{ '--tw-bg-opacity': 0 } as React.CSSProperties}
+                >
+                  다음 단계로 →
+                </button>
+                <div className="mt-2 text-gray-600 step-label">
+                  이제 브랜드를 조사해 볼게요
+                </div>
+              </div>
+            )}
+            
+            {currentStep === 2 && (
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    // 다음 단계로 직접 이동
+                    setCurrentStep(3)
+                  }}
+                  className="btn-primary"
+                  style={{ 
+                    '--tw-bg-opacity': 0,
+                    fontSize: '3.5vw',
+                    color: 'rgba(0, 0, 0, 0.8) !important',
+                    fontWeight: 'inherit'
+                  } as React.CSSProperties}
+                >
+                  다음 단계로 →
+                </button>
+                <div className="mt-2 text-gray-600 step-label">
+                  이제 브랜드 보이스를 제안해 드립니다
+                </div>
+              </div>
+            )}
+            
+            {currentStep === 3 && (
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    // 다음 단계로 직접 이동
+                    setCurrentStep(4)
+                  }}
+                  className="btn-primary"
+                  style={{ 
+                    '--tw-bg-opacity': 0,
+                    fontSize: '3.5vw',
+                    color: 'rgba(0, 0, 0, 0.8) !important',
+                    fontWeight: 'inherit'
+                  } as React.CSSProperties}
+                >
+                  다음 단계로 →
+                </button>
+                <div className="mt-2 text-gray-600 step-label">
+                  이제 브랜드 보이스에 어울리는 수퍼톤의 캐릭터 보이스를 추천해 드립니다
+                </div>
+              </div>
+            )}
+            
+            {currentStep === 4 && (
+              <div>
+                <button
+                  onClick={() => handleCharacterComplete()}
+                  className="btn-primary"
+                  style={{ 
+                    '--tw-bg-opacity': 0,
+                    fontSize: '3.5vw',
+                    color: 'rgba(0, 0, 0, 0.8) !important',
+                    fontWeight: 'inherit'
+                  } as React.CSSProperties}
+                >
+                  다음 단계로 →
+                </button>
+              </div>
+            )}
+            
+            {currentStep === 5 && (
+              <div>
+                <button
+                  onClick={resetToStart}
+                  className="btn-secondary text-gray-700"
+                  style={{ '--tw-bg-opacity': 0 } as React.CSSProperties}
+                >
+                  처음부터 다시 시작
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )
