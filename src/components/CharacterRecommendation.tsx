@@ -38,7 +38,7 @@ export default function CharacterRecommendation({
         setLoading(true)
         setError(null)
         
-        const response = await getCharacterRecommendations(hashtags)
+        const response = await getCharacterRecommendations(hashtags, brandVoice)
         
         console.log('퍼플렉시티 추천 결과:', response.recommendedCharacters)
         

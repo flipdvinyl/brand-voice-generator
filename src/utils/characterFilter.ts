@@ -127,15 +127,18 @@ export function categorizeByUseCaseFromHashtags(
 export function prepareSimilarityRankingPrompt(
   priority1: CompleteCharacterVoice[],
   priority2: CompleteCharacterVoice[],
-  otherHashtags: string[]
+  otherHashtags: string[],
+  brandVoiceText?: string
 ): string {
   // 웹 URL 참조 방식 - 외부에서 접근 가능한 API 엔드포인트 사용
   return `
 해시태그: ${otherHashtags.join(', ')}
 
+${brandVoiceText ? `브랜드 보이스 설명: ${brandVoiceText}` : ''}
+
 캐릭터 데이터베이스: https://brand-voice-generator.vercel.app/api/character-metadata
 
-위 해시태그를 바탕으로 캐릭터 데이터베이스에서 가장 적합한 캐릭터 10개를 추천해주세요.
+위 해시태그${brandVoiceText ? '와 브랜드 보이스 설명' : ''}을 바탕으로 캐릭터 데이터베이스에서 가장 적합한 캐릭터 10개를 추천해주세요.
 
 중요 규칙:
 1. 반드시 위 URL의 데이터베이스에 있는 실제 캐릭터 이름만 사용하세요
@@ -149,9 +152,10 @@ export function prepareSimilarityRankingPrompt(
 `
 }
 
-// 전체 필터링 파이프라인 (해시태그만 사용)
+// 전체 필터링 파이프라인 (해시태그 + 브랜드 보이스 사용)
 export function createCharacterFilteringPipeline(
-  hashtags: string[]
+  hashtags: string[],
+  brandVoiceText?: string
 ): {
   step1Filtered: CompleteCharacterVoice[]
   step2Categorized: { priority1: CompleteCharacterVoice[], priority2: CompleteCharacterVoice[] }
@@ -174,11 +178,12 @@ export function createCharacterFilteringPipeline(
     hashtagAnalysis.otherHashtags
   )
 
-  // 3차 필터링: 해시태그 기반 유사도 랭킹 프롬프트 생성
+  // 3차 필터링: 해시태그 + 브랜드 보이스 기반 유사도 랭킹 프롬프트 생성
   const similarityPrompt = prepareSimilarityRankingPrompt(
     step2Categorized.priority1,
     step2Categorized.priority2,
-    hashtagAnalysis.otherHashtags
+    hashtagAnalysis.otherHashtags,
+    brandVoiceText
   )
 
   return {

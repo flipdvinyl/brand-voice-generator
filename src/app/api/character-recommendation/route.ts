@@ -4,14 +4,15 @@ import { createCharacterFilteringPipeline } from '@/utils/characterFilter'
 
 interface CharacterRecommendationRequest {
   hashtags: string[]
+  brandVoiceText?: string
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { hashtags }: CharacterRecommendationRequest = await request.json()
+    const { hashtags, brandVoiceText }: CharacterRecommendationRequest = await request.json()
 
-    // 단계별 필터링 파이프라인 실행 (해시태그만 사용)
-    const filteringResult = createCharacterFilteringPipeline(hashtags)
+    // 단계별 필터링 파이프라인 실행 (해시태그 + 브랜드 보이스 사용)
+    const filteringResult = createCharacterFilteringPipeline(hashtags, brandVoiceText)
 
     console.log('필터링 결과:', {
       해시태그분석: filteringResult.hashtagAnalysis,
