@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { perplexityCharacterVoiceDB } from '@/utils/perplexityCharacterDB'
 import { completeCharacterVoiceDB } from '@/utils/completeCharacterDB'
+import { createCharacterFilteringPipeline } from '@/utils/characterFilter'
 
 interface CharacterRecommendationRequest {
   companyInfo: string
@@ -12,33 +12,22 @@ export async function POST(request: NextRequest) {
   try {
     const { companyInfo, brandVoice, hashtags }: CharacterRecommendationRequest = await request.json()
 
-    // 퍼플렉시티에 전달할 캐릭터 메타데이터 (간소화된 DB 사용)
-    const characterMetadata = perplexityCharacterVoiceDB
+    // 단계별 필터링 파이프라인 실행
+    const filteringResult = createCharacterFilteringPipeline(
+      companyInfo,
+      brandVoice,
+      hashtags
+    )
 
-    // Perplexity API에 보낼 프롬프트 구성
-    const prompt = `
-회사 정보: ${companyInfo}
-브랜드 보이스: ${brandVoice}
-해시태그: ${hashtags.join(', ')}
+    console.log('필터링 결과:', {
+      해시태그분석: filteringResult.hashtagAnalysis,
+      '1차필터링후보수': filteringResult.step1Filtered.length,
+      '우선순위1후보수': filteringResult.step2Categorized.priority1.length,
+      '우선순위2후보수': filteringResult.step2Categorized.priority2.length
+    })
 
-수퍼톤 캐릭터 메타데이터:
-${characterMetadata.map(char => 
-  `${char.name} (${char.gender}, ${char.age}): ${char.description}
-  사용 사례: ${char.usecases.join(', ')}
-  스타일: ${char.styles.join(', ')}`
-).join('\n\n')}
-
-위 정보를 바탕으로 브랜드 보이스에 가장 적합한 수퍼톤 캐릭터 10개를 추천해주세요.
-캐릭터 이름만 쉼표로 구분하여 나열해주세요. (예: Kate, Minwoo, Marie, Jin, ...)
-
-추천 기준:
-1. 브랜드 보이스와 캐릭터의 성격/톤이 일치하는지
-2. 회사 정보와 캐릭터의 사용 사례가 맞는지
-3. 해시태그와 관련된 용도에 적합한지
-4. 성별, 나이대가 브랜드 이미지와 부합하는지
-
-캐릭터 이름만 10개 나열해주세요:
-`
+    // Perplexity API에 보낼 프롬프트 (새로운 단계별 필터링 로직)
+    const prompt = filteringResult.similarityPrompt
 
     // Perplexity API 호출
     const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
