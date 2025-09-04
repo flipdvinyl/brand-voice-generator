@@ -129,16 +129,17 @@ export function prepareSimilarityRankingPrompt(
   priority2: CompleteCharacterVoice[],
   otherHashtags: string[]
 ): string {
-  // 웹 URL 참조 방식 - 외부에서 접근 가능한 API 엔드포인트 사용
+  // 실제 캐릭터 이름들을 프롬프트에 직접 포함
+  const allCandidates = [...priority1, ...priority2]
+  const candidateNames = allCandidates.map(char => char.name).join(', ')
+  
   return `
 해시태그: ${otherHashtags.join(', ')}
 
-캐릭터 데이터베이스: https://brand-voice-generator.vercel.app/api/character-metadata
+사용 가능한 캐릭터 이름들: ${candidateNames}
 
-위 해시태그를 바탕으로 캐릭터 데이터베이스에서 가장 적합한 캐릭터 10개를 추천해주세요.
-각 캐릭터의 name, description, age, gender, usecases, styles 정보를 참고하여 해시태그와 가장 잘 맞는 캐릭터들을 선택해주세요.
-
-중요: 반드시 데이터베이스에 있는 실제 캐릭터 이름만 사용하세요. 새로 만든 이름은 사용하지 마세요.
+위 해시태그를 바탕으로 사용 가능한 캐릭터 이름들 중에서 가장 적합한 캐릭터 10개를 추천해주세요.
+반드시 위에 나열된 캐릭터 이름들 중에서만 선택하세요. 새로 만든 이름은 절대 사용하지 마세요.
 
 응답 형식: 캐릭터 이름만 쉼표로 구분하여 나열하세요.
 예시: Kate, Minwoo, Marie, Jin, Andrew, Peter, Sam, Brody, Taeho, Ken
