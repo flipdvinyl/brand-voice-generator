@@ -138,7 +138,12 @@ export function prepareSimilarityRankingPrompt(
 위 해시태그를 바탕으로 캐릭터 데이터베이스에서 가장 적합한 캐릭터 10개를 추천해주세요.
 각 캐릭터의 name, description, age, gender, usecases, styles 정보를 참고하여 해시태그와 가장 잘 맞는 캐릭터들을 선택해주세요.
 
-캐릭터 이름만 10개 나열해주세요:
+중요: 반드시 데이터베이스에 있는 실제 캐릭터 이름만 사용하세요. 새로 만든 이름은 사용하지 마세요.
+
+응답 형식: 캐릭터 이름만 쉼표로 구분하여 나열하세요.
+예시: Kate, Minwoo, Marie, Jin, Andrew, Peter, Sam, Brody, Taeho, Ken
+
+캐릭터 이름 10개:
 `
 }
 

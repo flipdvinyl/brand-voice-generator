@@ -60,11 +60,13 @@ export async function POST(request: NextRequest) {
 
     console.log('퍼플렉시티 원본 응답:', recommendedText)
 
-    // 추천된 캐릭터 이름들 파싱
+    // 추천된 캐릭터 이름들 파싱 (개선된 로직)
     const recommendedCharacters = recommendedText
+      .split('\n')
+      .join(' ')
       .split(',')
-      .map((name: string) => name.trim())
-      .filter((name: string) => name.length > 0)
+      .map((name: string) => name.trim().replace(/^\d+\.\s*/, '')) // 숫자 번호 제거
+      .filter((name: string) => name.length > 0 && name.length < 50) // 너무 긴 텍스트 제거
       .slice(0, 10) // 최대 10개로 제한
 
     console.log('파싱된 캐릭터 이름들:', recommendedCharacters)
