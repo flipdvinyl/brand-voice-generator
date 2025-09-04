@@ -30,6 +30,9 @@ export async function POST(request: NextRequest) {
     const prompt = filteringResult.similarityPrompt
 
     // Perplexity API 호출
+    console.log('퍼플렉시티 API 키 존재 여부:', !!process.env.PERPLEXITY_API_KEY)
+    console.log('퍼플렉시티 프롬프트 길이:', prompt.length)
+    
     const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -49,8 +52,12 @@ export async function POST(request: NextRequest) {
       }),
     })
 
+    console.log('퍼플렉시티 응답 상태:', perplexityResponse.status, perplexityResponse.statusText)
+
     if (!perplexityResponse.ok) {
-      throw new Error('Perplexity API request failed')
+      const errorText = await perplexityResponse.text()
+      console.error('퍼플렉시티 API 에러 응답:', errorText)
+      throw new Error(`Perplexity API request failed: ${perplexityResponse.status} ${perplexityResponse.statusText}`)
     }
 
     const perplexityData = await perplexityResponse.json()

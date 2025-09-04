@@ -123,28 +123,33 @@ export function prepareSimilarityRankingPrompt(
     priority: priority1.includes(char) ? 1 : 2
   }))
 
+  // 프롬프트 길이 제한을 위해 우선순위 1 캐릭터들만 포함
+  const priority1Data = candidateData.filter(char => char.priority === 1)
+  const priority2Data = candidateData.filter(char => char.priority === 2).slice(0, 20) // 2순위는 최대 20개만
+  
   return `
 회사 정보: ${companyInfo}
 브랜드 보이스: ${brandVoice}
 추가 해시태그: ${otherHashtags.join(', ')}
 
-후보 캐릭터들 (우선순위별):
-${candidateData.map(char => 
-  `[우선순위 ${char.priority}] ${char.name} (${char.gender}, ${char.age}): ${char.description}
-  사용 사례: ${char.usecases.join(', ')}
+우선순위 1 캐릭터들 (${priority1Data.length}개):
+${priority1Data.map(char => 
+  `${char.name} (${char.gender}, ${char.age}): ${char.description}
+  사용사례: ${char.usecases.join(', ')}
+  스타일: ${char.styles.join(', ')}`
+).join('\n\n')}
+
+우선순위 2 캐릭터들 (${priority2Data.length}개):
+${priority2Data.map(char => 
+  `${char.name} (${char.gender}, ${char.age}): ${char.description}
+  사용사례: ${char.usecases.join(', ')}
   스타일: ${char.styles.join(', ')}`
 ).join('\n\n')}
 
 위 정보를 바탕으로 브랜드 보이스에 가장 적합한 캐릭터 10개를 추천해주세요.
+우선순위 1 캐릭터들을 우선적으로 고려하되, 더 적합한 우선순위 2 캐릭터도 포함할 수 있습니다.
 
-추천 기준:
-1. 우선순위 1 캐릭터들을 우선적으로 고려
-2. 브랜드 보이스와 캐릭터의 성격/톤이 일치하는지
-3. 회사 정보와 캐릭터의 사용 사례가 맞는지
-4. 추가 해시태그와 관련된 용도에 적합한지
-5. 성별, 나이대가 브랜드 이미지와 부합하는지
-
-캐릭터 이름만 10개 나열해주세요 (우선순위 순으로):
+캐릭터 이름만 10개 나열해주세요:
 `
 }
 
