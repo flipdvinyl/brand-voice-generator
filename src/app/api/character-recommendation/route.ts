@@ -14,12 +14,6 @@ export async function POST(request: NextRequest) {
     // 단계별 필터링 파이프라인 실행 (해시태그 + 브랜드 보이스 사용)
     const filteringResult = createCharacterFilteringPipeline(hashtags, brandVoiceText)
 
-    console.log('필터링 결과:', {
-      해시태그분석: filteringResult.hashtagAnalysis,
-      '1차필터링후보수': filteringResult.step1Filtered.length,
-      '우선순위1후보수': filteringResult.step2Categorized.priority1.length,
-      '우선순위2후보수': filteringResult.step2Categorized.priority2.length
-    })
 
     // Perplexity API에 보낼 프롬프트 (새로운 단계별 필터링 로직)
     const prompt = filteringResult.similarityPrompt
