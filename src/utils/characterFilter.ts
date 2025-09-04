@@ -129,13 +129,19 @@ export function prepareSimilarityRankingPrompt(
   priority2: CompleteCharacterVoice[],
   otherHashtags: string[]
 ): string {
-  // 간소화된 프롬프트 - 웹 URL만 참조
+  // 간소화된 프롬프트 - 캐릭터 이름만 포함
+  const priority1Names = priority1.map(char => char.name).join(', ')
+  const priority2Names = priority2.slice(0, 10).map(char => char.name).join(', ')
+  
   return `
 해시태그: ${otherHashtags.join(', ')}
 
-캐릭터 데이터베이스: https://brand-voice-generator.vercel.app/api/character-metadata
+우선순위 1 캐릭터들: ${priority1Names}
+우선순위 2 캐릭터들: ${priority2Names}
 
-위 해시태그를 바탕으로 캐릭터 데이터베이스에서 가장 적합한 캐릭터 10개를 추천해주세요.
+위 해시태그를 바탕으로 가장 적합한 캐릭터 10개를 추천해주세요.
+우선순위 1 캐릭터들을 우선적으로 고려하되, 더 적합한 우선순위 2 캐릭터도 포함할 수 있습니다.
+
 캐릭터 이름만 10개 나열해주세요:
 `
 }
