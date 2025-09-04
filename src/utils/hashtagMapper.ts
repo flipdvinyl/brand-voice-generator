@@ -74,7 +74,7 @@ export function extractAgeFromHashtags(hashtags: string[]): string | null {
 // 해시태그에서 성별과 나이를 제외한 나머지 해시태그 추출
 export function extractOtherHashtags(hashtags: string[]): string[] {
   const genderKeywords = [...GENDER_MAPPING.male, ...GENDER_MAPPING.female]
-  const ageKeywords = [...AGE_MAPPING.child, ...AGE_MAPPING.young_adult, ...AGE_MAPPING.middle_aged, ...AGE_MAPPING.elder]
+  const ageKeywords = [...AGE_MAPPING.child, ...AGE_MAPPING['young-adult'], ...AGE_MAPPING['middle-aged'], ...AGE_MAPPING.elder]
   const allFilterKeywords = [...genderKeywords, ...ageKeywords]
   
   return hashtags.filter(hashtag => 
