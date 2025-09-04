@@ -56,6 +56,8 @@ export async function POST(request: NextRequest) {
     const perplexityData = await perplexityResponse.json()
     const recommendedText = perplexityData.choices[0]?.message?.content || ''
 
+    console.log('퍼플렉시티 원본 응답:', recommendedText)
+
     // 추천된 캐릭터 이름들 파싱
     const recommendedCharacters = recommendedText
       .split(',')
@@ -63,10 +65,14 @@ export async function POST(request: NextRequest) {
       .filter((name: string) => name.length > 0)
       .slice(0, 10) // 최대 10개로 제한
 
+    console.log('파싱된 캐릭터 이름들:', recommendedCharacters)
+
     // 유효한 캐릭터 이름들만 필터링
     const validCharacters = recommendedCharacters.filter((name: string) =>
       completeCharacterVoiceDB.some(char => char.name === name)
     )
+
+    console.log('유효한 캐릭터들:', validCharacters)
 
     // 유효한 캐릭터가 4개 미만이면 기본 캐릭터들로 보완
     if (validCharacters.length < 4) {
@@ -75,10 +81,14 @@ export async function POST(request: NextRequest) {
         name => !validCharacters.includes(name)
       )
       validCharacters.push(...additionalCharacters)
+      console.log('기본 캐릭터로 보완:', additionalCharacters)
     }
 
+    const finalResult = validCharacters.slice(0, 4)
+    console.log('최종 반환 결과:', finalResult)
+
     return NextResponse.json({
-      recommendedCharacters: validCharacters.slice(0, 4) // 최종적으로 4개만 반환
+      recommendedCharacters: finalResult
     })
 
   } catch (error) {

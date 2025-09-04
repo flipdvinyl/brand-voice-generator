@@ -44,7 +44,11 @@ export default function CharacterRecommendation({
           hashtags
         )
         
+        console.log('퍼플렉시티 추천 결과:', response.recommendedCharacters)
+        
         const characterMetadata = getRecommendedCharacterMetadata(response.recommendedCharacters)
+        console.log('메타데이터 조회 결과:', characterMetadata.map(c => c.name))
+        
         setRecommendedCharacters(characterMetadata)
       } catch (err) {
         console.error('Failed to fetch character recommendations:', err)
