@@ -8,7 +8,7 @@ import {
   getAgeLabel,
   getGenderLabel,
   type CharacterVoice 
-} from '@/utils/characterRecommendation'
+} from '../utils/characterRecommendation'
 import SampleVoicePlayer from './SampleVoicePlayer'
 
 interface CharacterRecommendationProps {
@@ -38,13 +38,13 @@ export default function CharacterRecommendation({
         setLoading(true)
         setError(null)
         
-        const characterNames = await getCharacterRecommendations(
+        const response = await getCharacterRecommendations(
           companyInfo,
           brandVoice,
           hashtags
         )
         
-        const characterMetadata = getRecommendedCharacterMetadata(characterNames)
+        const characterMetadata = getRecommendedCharacterMetadata(response.recommendedCharacters)
         setRecommendedCharacters(characterMetadata)
       } catch (err) {
         console.error('Failed to fetch character recommendations:', err)
@@ -167,7 +167,7 @@ export default function CharacterRecommendation({
                 </p>
                 
                 <div className="flex flex-wrap gap-1 mb-3">
-                  {character.usecases.slice(0, 3).map((use, index) => (
+                  {character.usecases.slice(0, 3).map((use: string, index: number) => (
                     <span
                       key={index}
                       className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
@@ -184,7 +184,7 @@ export default function CharacterRecommendation({
 
                 {/* 스타일 정보 */}
                 <div className="flex flex-wrap gap-1">
-                  {character.styles.slice(0, 3).map((style, index) => (
+                  {character.styles.slice(0, 3).map((style: string, index: number) => (
                     <span
                       key={index}
                       className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
