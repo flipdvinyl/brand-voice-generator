@@ -43,6 +43,7 @@ export default function CompanyInfo({ companyName, onComplete }: CompanyInfoProp
 - 접두, 접미 미사여구 제거
 - [1], [2], [3] 같은 각주나 참조 번호 제거
 - (괄호) 형태의 설명이나 부가 정보 제거
+- '-'대시나, '**'강조 형태 제거
 - 순수한 회사 정보만 존댓말로 출력
 - 마크다운 형식이나 특수 기호 사용 금지
 - 영어 단어나 외래어는 한글로 번역하여 사용

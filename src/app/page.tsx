@@ -275,6 +275,8 @@ export default function Home() {
             <CharacterRecommendation
               companyName={companyData.name}
               brandVoice={companyData.brandVoice.join('\n')}
+              companyInfo={companyData.info.join('\n')}
+              hashtags={companyData.hashtags}
               onComplete={handleCharacterComplete}
             />
           )}

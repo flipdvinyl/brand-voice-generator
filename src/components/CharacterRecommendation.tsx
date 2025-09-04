@@ -1,63 +1,64 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Character } from '@/app/page'
+import { 
+  getCharacterRecommendations, 
+  getRecommendedCharacterMetadata,
+  getAgeLabel,
+  getGenderLabel,
+  type CharacterVoice 
+} from '@/utils/characterRecommendation'
+import SampleVoicePlayer from './SampleVoicePlayer'
 
 interface CharacterRecommendationProps {
   companyName: string
   brandVoice: string
+  companyInfo: string
+  hashtags: string[]
   onComplete: () => void
 }
 
 export default function CharacterRecommendation({ 
   companyName, 
   brandVoice, 
+  companyInfo,
+  hashtags,
   onComplete 
 }: CharacterRecommendationProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
+  const [recommendedCharacters, setRecommendedCharacters] = useState<CharacterVoice[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // 더미 캐릭터 데이터
-  const recommendedCharacters: Character[] = [
-    {
-      id: '1',
-      name: '사토루',
-      thumbnail: '/images/character1.jpg',
-      description: '신뢰감 있고 전문적인 30대 남성 캐릭터. 비즈니스 환경에서 완벽하게 어울리며, 고객과의 소통에 특화되어 있습니다.',
-      gender: '남',
-      age: 'Young-Adult',
-      usecase: ['Business', 'Narration', 'Storytelling']
-    },
-    {
-      id: '2',
-      name: '유키',
-      thumbnail: '/images/character2.jpg',
-      description: '친근하고 따뜻한 20대 후반 여성 캐릭터. 고객 상담과 서비스 분야에서 뛰어난 성과를 보여줍니다.',
-      gender: '녀',
-      age: 'Young-Adult',
-      usecase: ['Business', 'Entertainment', 'Customer Service']
-    },
-    {
-      id: '3',
-      name: '케이스케',
-      thumbnail: '/images/character3.jpg',
-      description: '경험과 지혜가 풍부한 50대 남성 캐릭터. 전통과 신뢰성을 바탕으로 한 브랜드 메시지 전달에 최적화되어 있습니다.',
-      gender: '남',
-      age: 'Middle-Aged',
-      usecase: ['Business', 'Narration', 'Audiobook']
-    },
-    {
-      id: '4',
-      name: '아야카',
-      thumbnail: '/images/character4.jpg',
-      description: '혁신적이고 창의적인 30대 여성 캐릭터. 새로운 기술과 트렌드를 선도하는 브랜드에 적합합니다.',
-      gender: '녀',
-      age: 'Young-Adult',
-      usecase: ['Entertainment', 'Storytelling', 'Business']
+  // 캐릭터 추천 로직 실행
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const characterNames = await getCharacterRecommendations(
+          companyInfo,
+          brandVoice,
+          hashtags
+        )
+        
+        const characterMetadata = getRecommendedCharacterMetadata(characterNames)
+        setRecommendedCharacters(characterMetadata)
+      } catch (err) {
+        console.error('Failed to fetch character recommendations:', err)
+        setError('캐릭터 추천을 불러오는데 실패했습니다.')
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
 
-  const handleCharacterSelect = (characterId: string) => {
-    setSelectedCharacter(characterId)
+    fetchRecommendations()
+  }, [companyInfo, brandVoice, hashtags])
+
+  const handleCharacterSelect = (characterName: string) => {
+    setSelectedCharacter(characterName)
   }
 
   const handleNext = () => {
@@ -66,18 +67,43 @@ export default function CharacterRecommendation({
     }
   }
 
-  const getAgeLabel = (age: string) => {
-    const ageLabels = {
-      'Child': '어린이',
-      'Young-Adult': '청년',
-      'Middle-Aged': '중년',
-      'Elder': '노년'
-    }
-    return ageLabels[age as keyof typeof ageLabels] || age
+  if (loading) {
+    return (
+      <div className="card max-w-6xl mx-auto">
+        <div className="text-center mb-6">
+          <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
+            수퍼톤 캐릭터 추천
+          </h2>
+          <p className="text-gray-600">
+            {companyName}의 브랜드 보이스에 가장 적합한 수퍼톤 캐릭터를 분석 중입니다...
+          </p>
+        </div>
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        </div>
+      </div>
+    )
   }
 
-  const getGenderLabel = (gender: string) => {
-    return gender === '남' ? '남성' : '여성'
+  if (error) {
+    return (
+      <div className="card max-w-6xl mx-auto">
+        <div className="text-center mb-6">
+          <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
+            수퍼톤 캐릭터 추천
+          </h2>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-600">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              다시 시도
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -94,36 +120,54 @@ export default function CharacterRecommendation({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {recommendedCharacters.map((character) => (
           <div
-            key={character.id}
+            key={character.name}
             className={`border-2 rounded-lg p-6 cursor-pointer transition-all duration-200 ${
-              selectedCharacter === character.id
+              selectedCharacter === character.name
                 ? 'border-primary-500 bg-primary-50'
                 : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
             }`}
-            onClick={() => handleCharacterSelect(character.id)}
+            onClick={() => handleCharacterSelect(character.name)}
           >
             <div className="flex items-start space-x-4">
               {/* 썸네일 이미지 */}
-              <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-2xl">
-                {character.gender === '남' ? '👨' : '👩'}
+              <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                {character.thumbnail ? (
+                  <img 
+                    src={character.thumbnail} 
+                    alt={character.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-gray-500 text-2xl">
+                    {character.gender === 'male' ? '👨' : '👩'}
+                  </span>
+                )}
               </div>
               
               <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {character.name}
-                  </h3>
-                  <span className="text-sm text-gray-500">
-                    {getGenderLabel(character.gender)} • {getAgeLabel(character.age)}
-                  </span>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {character.name}
+                    </h3>
+                    <span className="text-sm text-gray-500">
+                      {getGenderLabel(character.gender)} • {getAgeLabel(character.age)}
+                    </span>
+                  </div>
+                  {character.sample && (
+                    <SampleVoicePlayer 
+                      sampleUrl={character.sample} 
+                      characterName={character.name}
+                    />
+                  )}
                 </div>
                 
                 <p className="text-gray-600 text-sm mb-3 leading-relaxed">
-                  {character.description}
+                  {character.description || '전문적이고 신뢰할 수 있는 보이스 캐릭터입니다.'}
                 </p>
                 
-                <div className="flex flex-wrap gap-1">
-                  {character.usecase.map((use, index) => (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {character.usecases.slice(0, 3).map((use, index) => (
                     <span
                       key={index}
                       className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
@@ -131,11 +175,33 @@ export default function CharacterRecommendation({
                       {use}
                     </span>
                   ))}
+                  {character.usecases.length > 3 && (
+                    <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                      +{character.usecases.length - 3}
+                    </span>
+                  )}
+                </div>
+
+                {/* 스타일 정보 */}
+                <div className="flex flex-wrap gap-1">
+                  {character.styles.slice(0, 3).map((style, index) => (
+                    <span
+                      key={index}
+                      className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
+                    >
+                      {style}
+                    </span>
+                  ))}
+                  {character.styles.length > 3 && (
+                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                      +{character.styles.length - 3}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
             
-            {selectedCharacter === character.id && (
+            {selectedCharacter === character.name && (
               <div className="mt-4 p-3 bg-primary-100 rounded-lg">
                 <div className="flex items-center text-primary-700">
                   <span className="text-lg mr-2">✅</span>
@@ -147,7 +213,16 @@ export default function CharacterRecommendation({
         ))}
       </div>
 
-
+      {selectedCharacter && (
+        <div className="text-center">
+          <button
+            onClick={handleNext}
+            className="bg-primary-500 text-white px-8 py-3 rounded-lg hover:bg-primary-600 transition-colors"
+          >
+            다음 단계로
+          </button>
+        </div>
+      )}
     </div>
   )
 }
