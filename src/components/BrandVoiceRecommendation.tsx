@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import TTSPlayer, { TTSPlayerRef } from './TTSPlayer'
 
@@ -12,7 +12,7 @@ interface BrandVoiceRecommendationProps {
   imageGenerationEnabled: boolean
 }
 
-export default function BrandVoiceRecommendation({ 
+function BrandVoiceRecommendation({ 
   companyName, 
   companyInfo, 
   onComplete,
@@ -22,17 +22,16 @@ export default function BrandVoiceRecommendation({
   const [brandVoice, setBrandVoice] = useState('')
   const [hashtags, setHashtags] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(false)
   const [error, setError] = useState('')
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
   const [imageError, setImageError] = useState('')
+  const [isPlaying, setIsPlaying] = useState(false)
   
   // 🚨 중복 호출 방지를 위한 ref (CompanyInfo와 동일한 패턴)
   const isFetchingRef = React.useRef(false)
+  const ttsPlayerRef = React.useRef<TTSPlayerRef>(null)
   
-  // TTSPlayer ref (CompanyInfo와 동일한 패턴)
-  const ttsPlayerRef = useRef<TTSPlayerRef>(null)
 
   useEffect(() => {
     console.log('🔍 useEffect triggered - companyName:', companyName, 'companyInfo:', companyInfo?.substring(0, 50) + '...', 'isFetching:', isFetchingRef.current)
@@ -45,22 +44,6 @@ export default function BrandVoiceRecommendation({
     }
   }, [companyName, companyInfo])
 
-  // 브랜드 보이스가 로드되면 자동으로 TTS 재생 (CompanyInfo와 동일한 패턴)
-  useEffect(() => {
-    if (brandVoice && !isLoading && !error) {
-      // 1초 후 자동 재생
-      const timer = setTimeout(() => {
-        console.log('🎵 브랜드 보이스 TTS 자동 재생 시작...')
-        if (ttsPlayerRef.current) {
-          ttsPlayerRef.current.playFullTTS(brandVoice)
-        } else {
-          console.error('🎵 TTSPlayer ref가 null입니다!')
-        }
-      }, 1000)
-      
-      return () => clearTimeout(timer)
-    }
-  }, [brandVoice, isLoading, error])
 
   // 브랜드 보이스가 생성되면 자동으로 이미지 생성 (imageGenerationEnabled가 true일 때만)
   useEffect(() => {
@@ -105,46 +88,56 @@ export default function BrandVoiceRecommendation({
 
 정확히 10개를 #실제해시태그내용 형태로 출력해줘. 
 #해시태그1, #해시태그2 같은 번호 형태는 사용하지 말고, '해시태그' 같은 제목도 필요 없어. 단순히 해시태그만 10개 표시해줘.
+
+
 `
       })
 
       const info = response.data.info
       
-      // 해시태그 추출 및 필터링
+      // 해시태그 추출
       const hashtagMatches = info.match(/#[^\s#]+/g) || []
-      console.log('🔍 원본 추출된 해시태그:', hashtagMatches)
-      console.log('🔍 첫 번째 해시태그:', hashtagMatches[0])
-      console.log('🔍 첫 번째 해시태그 길이:', hashtagMatches[0]?.length)
-      
-      // #해시태그n 형태 필터링 및 유효한 해시태그만 추출
-      const validHashtags = hashtagMatches.filter((hashtag: string) => {
-        // #해시태그1, #해시태그2 같은 형태 제외
-        if (/^#해시태그\d+$/.test(hashtag)) {
-          console.log(`❌ 필터링된 해시태그: ${hashtag}`)
-          return false
-        }
-        // #1, #2 같은 단순 번호 형태 제외
-        if (/^#\d+$/.test(hashtag)) {
-          console.log(`❌ 필터링된 해시태그: ${hashtag}`)
-          return false
-        }
-        // 너무 짧은 해시태그 제외 (2자 이하, 성별 해시태그는 예외)
-        if (hashtag.length <= 3 && !['#남성', '#여성', '#중성'].includes(hashtag)) {
-          console.log(`❌ 너무 짧은 해시태그: ${hashtag}`)
-          return false
-        }
-        return true
-      })
-      
-      console.log('✅ 필터링 후 유효한 해시태그:', validHashtags)
+      console.log('🔍 추출된 해시태그:', hashtagMatches)
       
       // 해시태그 제거한 텍스트
       const cleanText = info.replace(/#[^\s#]+/g, '').trim()
       
-             setBrandVoice(cleanText)
-       setHashtags(validHashtags)
-       // 부모 컴포넌트에 완료 알림 (하지만 자동으로 다음 단계로 넘어가지 않음)
-       onComplete([cleanText], validHashtags)
+      setBrandVoice(cleanText)
+      setHashtags(hashtagMatches)
+      // 부모 컴포넌트에 완료 알림 (하지만 자동으로 다음 단계로 넘어가지 않음)
+      onComplete([cleanText], hashtagMatches)
+      
+      // TTS 재생 시작 (TTSPlayer가 마운트된 후)
+      console.log('🎵 TTS 재생 시작...')
+      console.log('🎵 ttsPlayerRef.current:', ttsPlayerRef.current)
+      console.log('🎵 cleanText:', cleanText)
+      
+      // TTSPlayer가 마운트될 때까지 대기
+      const waitForTTSPlayer = async () => {
+        let attempts = 0
+        const maxAttempts = 50 // 최대 5초 대기
+        
+        while (!ttsPlayerRef.current && attempts < maxAttempts) {
+          console.log(`🎵 TTSPlayer 대기 중... (${attempts + 1}/${maxAttempts})`)
+          await new Promise(resolve => setTimeout(resolve, 100))
+          attempts++
+        }
+        
+        if (ttsPlayerRef.current) {
+          console.log('🎵 TTSPlayer 준비 완료, playFullTTS 호출 시도...')
+          try {
+            await ttsPlayerRef.current.playFullTTS(cleanText)
+            console.log('🎵 playFullTTS 호출 성공')
+          } catch (error) {
+            console.error('🎵 playFullTTS 호출 실패:', error)
+          }
+        } else {
+          console.error('🎵 TTSPlayer 마운트 실패, TTS 재생 불가')
+        }
+      }
+      
+      // 비동기로 TTSPlayer 대기 및 TTS 시작
+      waitForTTSPlayer()
     } catch (error) {
       console.error('Error generating brand voice:', error)
       setError('브랜드 보이스 생성 중 오류가 발생했습니다.')
@@ -209,7 +202,6 @@ export default function BrandVoiceRecommendation({
     }
   }
 
-  // 🚨 TTS 관련 함수들은 TTSPlayer로 이동 (CompanyInfo와 동일한 패턴)
 
   if (isLoading) {
     return (
@@ -297,9 +289,12 @@ export default function BrandVoiceRecommendation({
           text={brandVoice}
           onPlayStart={() => setIsPlaying(true)}
           onPlayEnd={() => setIsPlaying(false)}
-          className="flex-1"
+          className="flex-1 mr-4"
         />
       </div>
+      
     </div>
   )
 }
+
+export default BrandVoiceRecommendation

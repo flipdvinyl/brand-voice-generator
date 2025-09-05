@@ -21,6 +21,7 @@ export interface CharacterRecommendationRequest {
 // 캐릭터 추천 응답 타입
 export interface CharacterRecommendationResponse {
   recommendedCharacters: string[]
+  recommendationReasons: { [key: string]: string }
 }
 
 // 완전한 캐릭터 보이스 메타데이터 DB (216개 캐릭터)
@@ -31,7 +32,7 @@ export const characterVoiceDB: CharacterVoice[] = completeCharacterVoiceDB.map(c
   gender: char.gender,
   usecases: char.usecases,
   styles: char.styles,
-  sample: char.sample_ko, // 한국어 샘플 사용
+  sample: char.sample_ja, // 일본어 샘플 사용
   thumbnail: char.thumbnail
 }))
 
@@ -61,7 +62,8 @@ export async function getCharacterRecommendations(
     console.error('Error getting character recommendations:', error)
     // 에러 발생 시 기본 캐릭터들 반환
     return {
-      recommendedCharacters: ['Kate', 'Minwoo', 'Marie', 'Jin']
+      recommendedCharacters: ['Kate', 'Minwoo', 'Marie', 'Jin'],
+      recommendationReasons: {}
     }
   }
 }

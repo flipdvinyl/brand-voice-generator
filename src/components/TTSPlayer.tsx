@@ -68,11 +68,24 @@ export const splitTextForTTS = (text: string): string[] => {
 // 전역적으로 현재 재생 중인 오디오를 추적
 let globalCurrentAudio: HTMLAudioElement | null = null
 
+// 전역 TTS 무시 플래그 (다음 섹션으로 넘어간 후 반환되는 TTS 오디오 무시)
+let globalTTSIgnoreFlag = false
+
+// TTS 무시 플래그 리셋 함수 (새로운 섹션에서 TTS를 사용할 때 호출)
+export const resetTTSIgnoreFlag = () => {
+  globalTTSIgnoreFlag = false
+  console.log('✅ 전역 TTS 무시 플래그 리셋 - TTS 재생 허용')
+}
+
 // TTS 완전 초기화 함수 (외부에서 사용 가능)
 export const resetAllTTSGlobal = () => {
   console.log('🔄 TTSPlayer의 resetAllTTSGlobal 함수 호출')
   
   try {
+    // 0. 전역 TTS 무시 플래그 설정 (가장 먼저!)
+    globalTTSIgnoreFlag = true
+    console.log('🚫 전역 TTS 무시 플래그 설정 - 이후 반환되는 TTS 오디오 무시')
+    
     // 1. 전역 currentAudio 즉시 중지
     if (globalCurrentAudio) {
       console.log('🚫 전역 currentAudio 즉시 중지 중...')
@@ -848,6 +861,12 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
 
   // TTS 재생 함수 (첫 번째 청크 제외하고 나머지만 재생)
   const playTTS = async (textToPlay: string) => {
+    // 전역 TTS 무시 플래그 확인
+    if (globalTTSIgnoreFlag) {
+      console.log('🚫 전역 TTS 무시 플래그가 설정되어 있어 TTS 재생을 무시합니다.')
+      return
+    }
+    
     if (isPlaying) {
       console.log('TTS가 이미 재생 중입니다.')
       return
@@ -904,6 +923,12 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
         }
       }
       
+      // 전역 TTS 무시 플래그 확인
+      if (globalTTSIgnoreFlag) {
+        console.log('🚫 전역 TTS 무시 플래그가 설정되어 TTS 재생을 건너뜁니다.')
+        return
+      }
+      
       // 재생 중지 요청이 있었는지 다시 확인
       if (stopRequestedRef.current) {
         console.log('🚫 TTS 생성 완료 후 재생 중지 요청으로 인한 재생 건너뜀')
@@ -917,6 +942,12 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
       
       // 버퍼에 저장된 오디오를 순차적으로 재생
       for (let i = 0; i < newAudioBuffers.length; i++) {
+        // 전역 TTS 무시 플래그 확인
+        if (globalTTSIgnoreFlag) {
+          console.log('🚫 전역 TTS 무시 플래그가 설정되어 TTS 재생을 중단합니다.')
+          break
+        }
+        
         // 재생 중지 요청이 있었는지 확인
         if (stopRequestedRef.current) {
           console.log('🚫 TTS 재생 중 중지 요청으로 인한 중단')

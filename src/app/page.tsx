@@ -26,8 +26,8 @@ export type Character = {
 }
 
 export default function Home() {
-  // 이미지 생성 기능 제어 전역 변수
-  const IMAGE_GENERATION_ENABLED = false // true: 이미지 생성 기능 켜기, false: 이미지 생성 기능 끄기
+  // 이미지 생성 기능 제어 상태
+  const [imageGenerationEnabled, setImageGenerationEnabled] = useState(false) // true: 이미지 생성 기능 켜기, false: 이미지 생성 기능 끄기
   
   // 하단 플로팅 영역 높이
   const FLOATING_BOTTOM_HEIGHT = 200 // px
@@ -169,6 +169,20 @@ export default function Home() {
         </div>
       )}
       
+      {/* 이미지 생성 토글 버튼 - 절대 위치 */}
+      <button
+        onClick={() => setImageGenerationEnabled(!imageGenerationEnabled)}
+        className="fixed text-3xl font-bold transition-all duration-200 hover:scale-110 z-50"
+        style={{ 
+          color: imageGenerationEnabled ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.1)',
+          top: '10px',
+          right: '10px'
+        }}
+        title={imageGenerationEnabled ? '이미지 생성 ON' : '이미지 생성 OFF'}
+      >
+        ☺
+      </button>
+      
       <div className={`container mx-auto px-4 py-8 ${currentStep === 3 ? 'brand-voice-step' : ''}`}>
         {/* Header */}
         <div className="text-center" style={{ margin: '4vh 0 2vh' }}>
@@ -267,7 +281,7 @@ export default function Home() {
                 companyInfo={companyData.info.join('\n')}
                 onComplete={handleBrandVoiceComplete}
                 onImageGenerated={setBrandVoiceImage}
-                imageGenerationEnabled={IMAGE_GENERATION_ENABLED}
+                imageGenerationEnabled={imageGenerationEnabled}
               />
             )}
           

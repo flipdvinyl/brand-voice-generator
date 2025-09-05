@@ -1,31 +1,87 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface SampleVoicePlayerProps {
   sampleUrl: string
   characterName: string
 }
 
+// 전역 오디오 관리
+let currentAudio: HTMLAudioElement | null = null
+let currentPlayerId: string | null = null
+let playerInstances: Set<() => void> = new Set()
+
 export default function SampleVoicePlayer({ sampleUrl, characterName }: SampleVoicePlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  
+  // 각 플레이어마다 고유 ID 생성
+  const playerId = `${characterName}-${sampleUrl}`
+
+  // 다른 플레이어가 재생될 때 현재 플레이어 상태 리셋
+  const resetPlayer = () => {
+    setIsPlaying(false)
+    setIsLoading(false)
+  }
+
+  // 컴포넌트 마운트/언마운트 시 전역 상태 관리
+  useEffect(() => {
+    playerInstances.add(resetPlayer)
+    
+    return () => {
+      playerInstances.delete(resetPlayer)
+      if (currentPlayerId === playerId && currentAudio) {
+        currentAudio.pause()
+        currentAudio = null
+        currentPlayerId = null
+      }
+    }
+  }, [playerId])
 
   const handlePlay = async () => {
     if (isPlaying) return
 
     try {
+      // 이전 오디오가 있다면 멈춤
+      if (currentAudio && currentPlayerId !== playerId) {
+        currentAudio.pause()
+        currentAudio = null
+        currentPlayerId = null
+      }
+
+      // 다른 모든 플레이어들의 상태 리셋
+      playerInstances.forEach(resetFn => {
+        if (resetFn !== resetPlayer) {
+          resetFn()
+        }
+      })
+
       setIsLoading(true)
       setIsPlaying(true)
 
       const audio = new Audio(sampleUrl)
+      
+      // 전역 상태 업데이트
+      currentAudio = audio
+      currentPlayerId = playerId
+
       audio.onended = () => {
         setIsPlaying(false)
         setIsLoading(false)
+        if (currentPlayerId === playerId) {
+          currentAudio = null
+          currentPlayerId = null
+        }
       }
+      
       audio.onerror = () => {
         setIsPlaying(false)
         setIsLoading(false)
+        if (currentPlayerId === playerId) {
+          currentAudio = null
+          currentPlayerId = null
+        }
         console.error('Failed to play sample voice')
       }
 
@@ -34,6 +90,10 @@ export default function SampleVoicePlayer({ sampleUrl, characterName }: SampleVo
       console.error('Error playing sample voice:', error)
       setIsPlaying(false)
       setIsLoading(false)
+      if (currentPlayerId === playerId) {
+        currentAudio = null
+        currentPlayerId = null
+      }
     }
   }
 

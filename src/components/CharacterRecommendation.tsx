@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { Character } from '@/app/page'
 import { 
   getCharacterRecommendations, 
@@ -28,34 +28,48 @@ export default function CharacterRecommendation({
 }: CharacterRecommendationProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const [recommendedCharacters, setRecommendedCharacters] = useState<CharacterVoice[]>([])
+  const [recommendationReasons, setRecommendationReasons] = useState<{ [key: string]: string }>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  // 🚨 중복 호출 방지를 위한 ref (CompanyInfo, BrandVoiceRecommendation과 동일한 패턴)
+  const isFetchingRef = React.useRef(false)
 
   // 캐릭터 추천 로직 실행
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        
-        const response = await getCharacterRecommendations(hashtags, brandVoice)
-        
-        console.log('퍼플렉시티 추천 결과:', response.recommendedCharacters)
-        
-        const characterMetadata = getRecommendedCharacterMetadata(response.recommendedCharacters)
-        console.log('메타데이터 조회 결과:', characterMetadata.map(c => c.name))
-        
-        setRecommendedCharacters(characterMetadata)
-      } catch (err) {
-        console.error('Failed to fetch character recommendations:', err)
-        setError('캐릭터 추천을 불러오는데 실패했습니다.')
-      } finally {
-        setLoading(false)
-      }
+    console.log('🔍 useEffect triggered - hashtags:', hashtags, 'isFetching:', isFetchingRef.current)
+    if (!isFetchingRef.current) {
+      console.log('🚀 fetchRecommendations 호출')
+      isFetchingRef.current = true
+      fetchRecommendations()
+    } else {
+      console.log('⚠️ 이미 fetch 중, 건너뜀')
     }
-
-    fetchRecommendations()
   }, [hashtags])
+
+  const fetchRecommendations = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const response = await getCharacterRecommendations(hashtags, brandVoice)
+      
+      console.log('퍼플렉시티 추천 결과:', response.recommendedCharacters)
+      console.log('추천 이유:', response.recommendationReasons)
+      
+      const characterMetadata = getRecommendedCharacterMetadata(response.recommendedCharacters)
+      console.log('메타데이터 조회 결과:', characterMetadata.map(c => c.name))
+      
+      setRecommendedCharacters(characterMetadata)
+      setRecommendationReasons(response.recommendationReasons)
+    } catch (err) {
+      console.error('Failed to fetch character recommendations:', err)
+      setError('캐릭터 추천을 불러오는데 실패했습니다.')
+    } finally {
+      setLoading(false)
+      isFetchingRef.current = false // Reset fetching state
+    }
+  }
 
   const handleCharacterSelect = (characterName: string) => {
     setSelectedCharacter(characterName)
@@ -162,9 +176,12 @@ export default function CharacterRecommendation({
                   )}
                 </div>
                 
-                <p className="text-gray-600 text-sm mb-3 leading-relaxed">
-                  {character.description || '전문적이고 신뢰할 수 있는 보이스 캐릭터입니다.'}
-                </p>
+                {/* 추천 이유 표시 */}
+                {recommendationReasons[character.name] && (
+                  <p className="text-gray-600 text-sm mb-3 leading-relaxed">
+                    {recommendationReasons[character.name]}
+                  </p>
+                )}
                 
                 <div className="flex flex-wrap gap-1 mb-3">
                   {character.usecases.slice(0, 3).map((use: string, index: number) => (

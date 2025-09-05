@@ -160,7 +160,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "400c24c9a2718734a5b404",
-    name: "[Choice] Lang",
+    name: "Lang",
     description: "",
     age: "child",
     gender: "female",
@@ -277,7 +277,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "39efcf380136480f3941b5",
-    name: "[Choice] Eddie",
+    name: "Eddie",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -641,7 +641,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "d40bae491c78a65f2f8488",
-    name: "[Choice] Cheeky",
+    name: "Cheeky",
     description: "Cheeky is a young wizard girl who speaks in a whiny, demanding tone.",
     age: "child",
     gender: "female",
@@ -667,7 +667,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "0ba68a0776c8a0d922fa98",
-    name: "[Choice] Se-A",
+    name: "Se-A",
     description: "Se-a is a lively and cheerful girl with a confident tone. She has a cool and assertive personality.",
     age: "young-adult",
     gender: "female",
@@ -849,7 +849,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "a47d6ed7f2972d6b56415d",
-    name: "[Meme] Santa",
+    name: "Santa",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -927,7 +927,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "bacc385ac094a4e0c187a0",
-    name: "[Choice] Grace",
+    name: "Grace",
     description: "Grace is a middle-aged woman and an innkeeper. She is warm-hearted and very kind, and it shows in her voice.",
     age: "middle-aged",
     gender: "female",
@@ -953,7 +953,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "fb2966d814629bb8e49dae",
-    name: "[Choice] Ora",
+    name: "Ora",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -966,7 +966,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "7923018d32ff96a5d2ccc5",
-    name: "[New] Goro",
+    name: "Goro",
     description: "",
     age: "elder",
     gender: "male",
@@ -992,7 +992,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "7e65acfbccf3cce87240ca",
-    name: "[Meme] Berry Annoying",
+    name: "Berry Annoying",
     description: "",
     age: "middle-aged",
     gender: "female",
@@ -1018,7 +1018,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "bc627316fee9d3649c686c",
-    name: "[Meme] Devil",
+    name: "Devil",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1031,7 +1031,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "4404f9613ff506ebd6daee",
-    name: "[Meme] GenZZZ",
+    name: "GenZZZ",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1044,7 +1044,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "7261e1a1aac908399c86ed",
-    name: "[Choice] Rio",
+    name: "Rio",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1109,7 +1109,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "29c93f0ce98f59a7160c3b",
-    name: "[Choice] Suho",
+    name: "Suho",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1200,7 +1200,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "084714312eb4ec06fbfe51",
-    name: "[Choice] Tilly",
+    name: "Tilly",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1317,7 +1317,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "195e1922033a6168f0c90f",
-    name: "[Choice] Angelina",
+    name: "Angelina",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1369,7 +1369,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "39b96759e0af5b7a45d541",
-    name: "[Choice] Billy",
+    name: "Billy",
     description: "",
     age: "child",
     gender: "male",
@@ -1382,7 +1382,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "a10e8ce028df532ae29156",
-    name: "[Choice] Bryan",
+    name: "Bryan",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1421,7 +1421,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "59901b1bf6d0a41d49397f",
-    name: "[New] Jihu",
+    name: "Jihu",
     description: "",
     age: "child",
     gender: "male",
@@ -1460,7 +1460,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "b6c59d12355a00040d70a1",
-    name: "[Choice] Akari",
+    name: "Akari",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1486,7 +1486,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "fa3a01c41fb1d5461e1d5a",
-    name: "[Meme] Rudolph",
+    name: "Rudolph",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1499,7 +1499,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "375cbcabf1715c40ca63fa",
-    name: "[Meme] Father Jacob",
+    name: "Father Jacob",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1512,7 +1512,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "96ffd2c7515529660baf1b",
-    name: "[Meme] Clown Boopy",
+    name: "Clown Boopy",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1525,7 +1525,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "517c485ee9c9bd90c4cb37",
-    name: "[Meme] Gingerbread",
+    name: "Gingerbread",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1538,7 +1538,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "3d49d8211c028f84bc946a",
-    name: "[Meme] Mok-Sensei",
+    name: "Mok-Sensei",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1551,7 +1551,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "26dbddbce9113c14a6822c",
-    name: "[Meme] Anika",
+    name: "Anika",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1564,7 +1564,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "838617ea6b672b84de0813",
-    name: "[Choice] Hoon",
+    name: "Hoon",
     description: "Meet Hoon, the versatile narrator perfect for audiobooks. With his calm tone, he creates a soothing backdrop for listeners across genres like self-development, education, children's stories, and novels. Hoon's voice guides personal growth, explains complex concepts, captivates young imaginations, and immerses listeners in captivating plots, providing an engaging experience.",
     age: "middle-aged",
     gender: "male",
@@ -1577,7 +1577,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "6b967561f8798c9b940352",
-    name: "[Meme] Munsik",
+    name: "Munsik",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1616,7 +1616,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "100c18a98e3c5420cb4798",
-    name: "[Meme] Sion",
+    name: "Sion",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1629,7 +1629,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "ad67887f07639d2973f48a",
-    name: "[Meme] Soulless",
+    name: "Soulless",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1642,7 +1642,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "a213ca3c004c21da52d35d",
-    name: "[Meme] Reader",
+    name: "Reader",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1655,7 +1655,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "024646262ad2f572595b3a",
-    name: "[Meme] TMT",
+    name: "TMT",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1668,7 +1668,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "b4c2b1594f86a73e843c9e",
-    name: "[Meme] Youngja",
+    name: "Youngja",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1707,7 +1707,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "4f8ed5978a174902ad2fc9",
-    name: "[New] Chunsik",
+    name: "Chunsik",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1733,7 +1733,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "049d87c31d8e431b15f468",
-    name: "[Choice] Hanbi",
+    name: "Hanbi",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1746,7 +1746,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "289a055b782b3072b7cd11",
-    name: "[Choice] Mika",
+    name: "Mika",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1876,7 +1876,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "04bdc384934da76eee400c",
-    name: "[Choice] Sakura",
+    name: "Sakura",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1889,7 +1889,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "fd15ad31caa16bd021f01d",
-    name: "[Choice] Hannah",
+    name: "Hannah",
     description: "Meet Hannah, the calm and friendly announcer voice. With a soothing tone, she guides passengers through terminals and directs visitors in research facilities. Her voice is also ideal for airports and libraries. Hannah's voice provides clear and reassuring guidance, whether in the bustling atmosphere of airports or the serene ambiance of libraries.",
     age: "young-adult",
     gender: "female",
@@ -2019,7 +2019,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "62dd494c90fd475e43649c",
-    name: "[Meme] NyangNyangi",
+    name: "NyangNyangi",
     description: "2.1 업로드",
     age: "young-adult",
     gender: "female",
@@ -2071,7 +2071,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "2521ed2f5280f2632d1d6b",
-    name: "[Meme] Jamie The Kid",
+    name: "Jamie The Kid",
     description: "",
     age: "child",
     gender: "female",
@@ -2084,7 +2084,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "714b5206244ab01b8fe5e7",
-    name: "[Meme] Dr. Donnerberg",
+    name: "Dr. Donnerberg",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -2123,7 +2123,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "dc7b4ef5280ceb9a9df4f3",
-    name: "[Meme] Kuma",
+    name: "Kuma",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -2162,7 +2162,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "040f545ff47a7e9018cfe8",
-    name: "[Meme] Tony",
+    name: "Tony",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -2175,7 +2175,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "9fa254b618fb5e7eb87386",
-    name: "[Meme] Ratthew",
+    name: "Ratthew",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -2266,7 +2266,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "b720c4aff5a112a7de1ec9",
-    name: "[New] Wonhwa",
+    name: "Wonhwa",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -2552,7 +2552,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "53316db0151b939a3c4599",
-    name: "[Meme] Ato",
+    name: "Ato",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -2656,7 +2656,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "42b52760fe9ecf701f8ed3",
-    name: "[Choice] Yannom",
+    name: "Yannom",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -2669,7 +2669,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "c9858bccab131431a5c3c7",
-    name: "[Choice] Dustin",
+    name: "Dustin",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -2708,7 +2708,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "c9220df3a5a70647d7b022",
-    name: "[Choice] Yejin",
+    name: "Yejin",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -2747,7 +2747,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "5738805d9ea062990e7c4d",
-    name: "[New] Harrison",
+    name: "Harrison",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -2760,7 +2760,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "1d1e8432baf80566635226",
-    name: "[New] Rachel",
+    name: "Rachel",
     description: "",
     age: "middle-aged",
     gender: "female",
@@ -2773,7 +2773,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "c913e4f120724f32fb72de",
-    name: "[New] Rick",
+    name: "Rick",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -2786,7 +2786,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "32d43349abb5df0c414df1",
-    name: "[New] Evan",
+    name: "Evan",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -2799,7 +2799,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "8f613eacb1f3ccd5abb1cb",
-    name: "[New] Kadako",
+    name: "Kadako",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -2812,7 +2812,7 @@ export const completeCharacterVoiceDB: CompleteCharacterVoice[] = [
   },
   {
     voice_id: "812658ca9168fd9e2a9afe",
-    name: "[New] Saza",
+    name: "Saza",
     description: "",
     age: "young-adult",
     gender: "male",

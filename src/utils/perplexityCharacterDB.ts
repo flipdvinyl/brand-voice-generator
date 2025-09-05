@@ -99,7 +99,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Curious", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Lang",
+    name: "Lang",
     description: "",
     age: "child",
     gender: "female",
@@ -171,7 +171,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Curious", "Happy", "Neutral", "Sad", "Shy"]
   },
   {
-    name: "[Choice] Eddie",
+    name: "Eddie",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -395,7 +395,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Admiring", "Angry", "Happy", "Loving", "Neutral", "Sad", "Shy"]
   },
   {
-    name: "[Choice] Cheeky",
+    name: "Cheeky",
     description: "Cheeky is a young wizard girl who speaks in a whiny, demanding tone.",
     age: "child",
     gender: "female",
@@ -411,7 +411,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Curious", "Happy", "Neutral", "Sad", "Suspicious", "Triumphant"]
   },
   {
-    name: "[Choice] Se-A",
+    name: "Se-A",
     description: "Se-a is a lively and cheerful girl with a confident tone. She has a cool and assertive personality.",
     age: "young-adult",
     gender: "female",
@@ -523,7 +523,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad", "Shouting", "Suspicious"]
   },
   {
-    name: "[Meme] Santa",
+    name: "Santa",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -571,7 +571,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Angry +", "Anxious", "Anxious +", "Happy", "Happy +", "Neutral", "Neutral +", "Sad", "Teasing", "Teasing +"]
   },
   {
-    name: "[Choice] Grace",
+    name: "Grace",
     description: "Grace is a middle-aged woman and an innkeeper. She is warm-hearted and very kind, and it shows in her voice.",
     age: "middle-aged",
     gender: "female",
@@ -587,7 +587,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Anxious", "Curious", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Ora",
+    name: "Ora",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -595,7 +595,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Curious", "Disgusted", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[New] Goro",
+    name: "Goro",
     description: "",
     age: "elder",
     gender: "male",
@@ -611,7 +611,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Flirty", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Meme] Berry Annoying",
+    name: "Berry Annoying",
     description: "",
     age: "middle-aged",
     gender: "female",
@@ -627,7 +627,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Happy", "Kind", "Neutral"]
   },
   {
-    name: "[Meme] Devil",
+    name: "Devil",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -635,7 +635,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Evil"]
   },
   {
-    name: "[Meme] GenZZZ",
+    name: "GenZZZ",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -643,7 +643,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Choice] Rio",
+    name: "Rio",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -683,7 +683,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Curious", "Happy", "Neutral", "Sad", "Teasing"]
   },
   {
-    name: "[Choice] Suho",
+    name: "Suho",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -739,7 +739,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Anxious", "Curious", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Tilly",
+    name: "Tilly",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -811,7 +811,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Disgusted", "Happy", "Neutral", "Sad", "Surprised"]
   },
   {
-    name: "[Choice] Angelina",
+    name: "Angelina",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -843,7 +843,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Disgusted", "Happy", "Kind", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Billy",
+    name: "Billy",
     description: "",
     age: "child",
     gender: "male",
@@ -851,7 +851,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Annoyed", "Happy", "Neutral", "Sad", "Shy"]
   },
   {
-    name: "[Choice] Bryan",
+    name: "Bryan",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -875,7 +875,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Happy", "Neutral", "Serene"]
   },
   {
-    name: "[New] Jihu",
+    name: "Jihu",
     description: "",
     age: "child",
     gender: "male",
@@ -899,7 +899,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Disgusted", "Excited", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Akari",
+    name: "Akari",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -915,7 +915,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Rudolph",
+    name: "Rudolph",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -923,7 +923,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Father Jacob",
+    name: "Father Jacob",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -931,7 +931,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Clown Boopy",
+    name: "Clown Boopy",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -939,7 +939,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Excited"]
   },
   {
-    name: "[Meme] Gingerbread",
+    name: "Gingerbread",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -947,7 +947,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Mok-Sensei",
+    name: "Mok-Sensei",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -955,7 +955,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Anika",
+    name: "Anika",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -963,7 +963,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Choice] Hoon",
+    name: "Hoon",
     description: "Meet Hoon, the versatile narrator perfect for audiobooks. With his calm tone, he creates a soothing backdrop for listeners across genres like self-development, education, children's stories, and novels. Hoon's voice guides personal growth, explains complex concepts, captivates young imaginations, and immerses listeners in captivating plots, providing an engaging experience.",
     age: "middle-aged",
     gender: "male",
@@ -971,7 +971,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Munsik",
+    name: "Munsik",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -995,7 +995,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Sion",
+    name: "Sion",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1003,7 +1003,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Soulless",
+    name: "Soulless",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1011,7 +1011,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Reader",
+    name: "Reader",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1019,7 +1019,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] TMT",
+    name: "TMT",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1027,7 +1027,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Youngja",
+    name: "Youngja",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1051,7 +1051,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[New] Chunsik",
+    name: "Chunsik",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1067,7 +1067,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Annoyed", "Happy", "Kind", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Hanbi",
+    name: "Hanbi",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1075,7 +1075,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad", "Teasing"]
   },
   {
-    name: "[Choice] Mika",
+    name: "Mika",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1155,7 +1155,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Annoyed", "Anxious", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Sakura",
+    name: "Sakura",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1163,7 +1163,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Choice] Hannah",
+    name: "Hannah",
     description: "Meet Hannah, the calm and friendly announcer voice. With a soothing tone, she guides passengers through terminals and directs visitors in research facilities. Her voice is also ideal for airports and libraries. Hannah's voice provides clear and reassuring guidance, whether in the bustling atmosphere of airports or the serene ambiance of libraries.",
     age: "young-adult",
     gender: "female",
@@ -1243,7 +1243,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] NyangNyangi",
+    name: "NyangNyangi",
     description: "2.1 업로드",
     age: "young-adult",
     gender: "female",
@@ -1275,7 +1275,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Friendly", "Happy", "Neutral", "Relieved", "Sad"]
   },
   {
-    name: "[Meme] Jamie The Kid",
+    name: "Jamie The Kid",
     description: "",
     age: "child",
     gender: "female",
@@ -1283,7 +1283,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Annoyed"]
   },
   {
-    name: "[Meme] Dr. Donnerberg",
+    name: "Dr. Donnerberg",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1307,7 +1307,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Annoyed", "Curious", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Meme] Kuma",
+    name: "Kuma",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1331,7 +1331,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Embarrassed", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Meme] Tony",
+    name: "Tony",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1339,7 +1339,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Ratthew",
+    name: "Ratthew",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1395,7 +1395,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad", "Shy", "Teasing"]
   },
   {
-    name: "[New] Wonhwa",
+    name: "Wonhwa",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1571,7 +1571,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Meme] Ato",
+    name: "Ato",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1635,7 +1635,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[Choice] Yannom",
+    name: "Yannom",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1643,7 +1643,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Dustin",
+    name: "Dustin",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1667,7 +1667,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[Choice] Yejin",
+    name: "Yejin",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1691,7 +1691,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[New] Harrison",
+    name: "Harrison",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1699,7 +1699,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[New] Rachel",
+    name: "Rachel",
     description: "",
     age: "middle-aged",
     gender: "female",
@@ -1707,7 +1707,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[New] Rick",
+    name: "Rick",
     description: "",
     age: "middle-aged",
     gender: "male",
@@ -1715,7 +1715,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Embarrassed", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[New] Evan",
+    name: "Evan",
     description: "",
     age: "young-adult",
     gender: "male",
@@ -1723,7 +1723,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Angry", "Happy", "Neutral", "Sad"]
   },
   {
-    name: "[New] Kadako",
+    name: "Kadako",
     description: "",
     age: "young-adult",
     gender: "female",
@@ -1731,7 +1731,7 @@ export const perplexityCharacterVoiceDB: PerplexityCharacterVoice[] = [
     styles: ["Neutral"]
   },
   {
-    name: "[New] Saza",
+    name: "Saza",
     description: "",
     age: "young-adult",
     gender: "male",
