@@ -9,7 +9,6 @@ import {
   getGenderLabel,
   type CharacterVoice 
 } from '../utils/characterRecommendation'
-import SampleVoicePlayer from './SampleVoicePlayer'
 
 interface CharacterRecommendationProps {
   companyName: string
@@ -31,6 +30,7 @@ export default function CharacterRecommendation({
   const [recommendationReasons, setRecommendationReasons] = useState<{ [key: string]: string }>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null)
   
   // 🚨 중복 호출 방지를 위한 ref (CompanyInfo, BrandVoiceRecommendation과 동일한 패턴)
   const isFetchingRef = React.useRef(false)
@@ -123,85 +123,102 @@ export default function CharacterRecommendation({
   return (
     <div className="card max-w-6xl mx-auto">
       <div className="text-center mb-6">
-        <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }}>
-          수퍼톤 캐릭터 추천
-        </h2>
-        <p className="text-gray-600">
-          {companyName}의 브랜드 보이스에 가장 적합한 수퍼톤 캐릭터를 선택해주세요.
-        </p>
+        <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }} dangerouslySetInnerHTML={{
+          __html: `${companyName}에 어울리는<br>수퍼톤 보이스를 제안해요`
+        }}></h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {recommendedCharacters.map((character) => (
           <div
             key={character.name}
-            className={`border-2 rounded-lg p-6 cursor-pointer transition-all duration-200 ${
-              selectedCharacter === character.name
-                ? 'border-primary-500 bg-primary-50'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-            }`}
-            onClick={() => handleCharacterSelect(character.name)}
+            className="rounded-lg p-6 cursor-pointer transition-all duration-200"
+            style={{
+              backgroundColor: selectedCharacter === character.name 
+                ? 'rgba(255, 255, 255, 0.9)' 
+                : 'rgba(255, 255, 255, 0.4)',
+              filter: selectedCharacter === character.name 
+                ? 'drop-shadow(0 0 15px rgba(0, 0, 0, 0.5))' 
+                : 'none'
+            }}
+            onClick={() => {
+              handleCharacterSelect(character.name)
+              
+              // 기존 재생 중인 오디오 중지
+              if (currentAudio) {
+                currentAudio.pause()
+                currentAudio.currentTime = 0
+                setCurrentAudio(null)
+              }
+              
+              // 새로운 샘플 음성 재생
+              if (character.sample) {
+                const audio = new Audio(character.sample)
+                setCurrentAudio(audio)
+                
+                audio.play().catch(error => {
+                  console.error('Error playing sample voice:', error)
+                  setCurrentAudio(null)
+                })
+                
+                // 재생 완료 시 currentAudio 상태 초기화
+                audio.onended = () => {
+                  setCurrentAudio(null)
+                }
+                
+                // 재생 에러 시 currentAudio 상태 초기화
+                audio.onerror = () => {
+                  setCurrentAudio(null)
+                }
+              }
+            }}
           >
+            {/* 1열: 이름 */}
+            <div className="mb-4">
+              <h3 className="text-3xl font-semibold text-gray-800">
+                {character.name}의 목소리
+              </h3>
+            </div>
+            
+            {/* 2열: 추천 이유 */}
+            {recommendationReasons[character.name] && (
+              <div className="mb-4">
+                <p className="text-gray-600 text-base leading-relaxed">
+                  {recommendationReasons[character.name]}
+                </p>
+              </div>
+            )}
+            
+            {/* 3열: 좌측(썸네일) + 우측(성별나이+스타일) */}
             <div className="flex items-start space-x-4">
-              {/* 썸네일 이미지 */}
-              <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-                {character.thumbnail ? (
-                  <img 
-                    src={character.thumbnail} 
-                    alt={character.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-gray-500 text-2xl">
-                    {character.gender === 'male' ? '👨' : '👩'}
-                  </span>
-                )}
+              {/* 3열 좌측: 썸네일 */}
+              <div className="flex flex-col items-center">
+                <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                  {character.thumbnail ? (
+                    <img 
+                      src={character.thumbnail} 
+                      alt={character.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-500 text-2xl">
+                      {character.gender === 'male' ? '👨' : '👩'}
+                    </span>
+                  )}
+                </div>
               </div>
               
+              {/* 3열 우측: 성별나이 + 스타일 */}
               <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-xl font-semibold text-gray-800">
-                      {character.name}
-                    </h3>
-                    <span className="text-sm text-gray-500">
-                      {getGenderLabel(character.gender)} • {getAgeLabel(character.age)}
-                    </span>
-                  </div>
-                  {character.sample && (
-                    <SampleVoicePlayer 
-                      sampleUrl={character.sample} 
-                      characterName={character.name}
-                    />
-                  )}
+                <div className="mb-3">
+                  <span className="text-sm text-gray-500">
+                    {getGenderLabel(character.gender)} • {getAgeLabel(character.age)}
+                  </span>
                 </div>
                 
-                {/* 추천 이유 표시 */}
-                {recommendationReasons[character.name] && (
-                  <p className="text-gray-600 text-sm mb-3 leading-relaxed">
-                    {recommendationReasons[character.name]}
-                  </p>
-                )}
-                
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {character.usecases.slice(0, 3).map((use: string, index: number) => (
-                    <span
-                      key={index}
-                      className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
-                    >
-                      {use}
-                    </span>
-                  ))}
-                  {character.usecases.length > 3 && (
-                    <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
-                      +{character.usecases.length - 3}
-                    </span>
-                  )}
-                </div>
-
-                {/* 스타일 정보 */}
+                {/* 스타일 정보 - 모두 나열 */}
                 <div className="flex flex-wrap gap-1">
-                  {character.styles.slice(0, 3).map((style: string, index: number) => (
+                  {character.styles.map((style: string, index: number) => (
                     <span
                       key={index}
                       className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"
@@ -209,23 +226,9 @@ export default function CharacterRecommendation({
                       {style}
                     </span>
                   ))}
-                  {character.styles.length > 3 && (
-                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
-                      +{character.styles.length - 3}
-                    </span>
-                  )}
                 </div>
               </div>
             </div>
-            
-            {selectedCharacter === character.name && (
-              <div className="mt-4 p-3 bg-primary-100 rounded-lg">
-                <div className="flex items-center text-primary-700">
-                  <span className="text-lg mr-2">✅</span>
-                  <span className="font-medium">선택됨</span>
-                </div>
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -243,3 +246,4 @@ export default function CharacterRecommendation({
     </div>
   )
 }
+

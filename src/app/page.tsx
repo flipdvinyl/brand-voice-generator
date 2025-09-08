@@ -27,7 +27,7 @@ export type Character = {
 
 export default function Home() {
   // 이미지 생성 기능 제어 상태
-  const [imageGenerationEnabled, setImageGenerationEnabled] = useState(false) // true: 이미지 생성 기능 켜기, false: 이미지 생성 기능 끄기
+  const [imageGenerationEnabled, setImageGenerationEnabled] = useState(true) // true: 이미지 생성 기능 켜기, false: 이미지 생성 기능 끄기
   
   // 하단 플로팅 영역 높이
   const FLOATING_BOTTOM_HEIGHT = 200 // px
