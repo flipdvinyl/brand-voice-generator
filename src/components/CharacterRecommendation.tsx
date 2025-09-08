@@ -175,7 +175,7 @@ export default function CharacterRecommendation({
           >
             {/* 1열: 이름 */}
             <div className="mb-4">
-              <h3 className="text-3xl font-semibold text-gray-800">
+              <h3 className="text-3xl font-semibold" style={{ color: 'rgba(0, 0, 0, 1.0)' }}>
                 {character.name}의 목소리
               </h3>
             </div>
@@ -183,7 +183,7 @@ export default function CharacterRecommendation({
             {/* 2열: 추천 이유 */}
             {recommendationReasons[character.name] && (
               <div className="mb-4">
-                <p className="text-gray-600 text-base leading-relaxed">
+                <p className="text-base leading-relaxed" style={{ color: 'rgba(0, 0, 0, 1.0)' }}>
                   {recommendationReasons[character.name]}
                 </p>
               </div>
@@ -211,7 +211,7 @@ export default function CharacterRecommendation({
               {/* 3열 우측: 성별나이 + 스타일 */}
               <div className="flex-1">
                 <div className="mb-3">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm" style={{ color: 'rgba(0, 0, 0, 1.0)' }}>
                     {getGenderLabel(character.gender)} • {getAgeLabel(character.age)}
                   </span>
                 </div>
