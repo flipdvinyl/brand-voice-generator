@@ -129,7 +129,7 @@ export const resetAllTTSGlobal = () => {
 }
 
 // 첫 번째 청크를 미리 생성하여 버퍼링하는 함수
-export const prepareFirstChunk = async (text: string): Promise<HTMLAudioElement | null> => {
+export const prepareFirstChunk = async (text: string, voiceId?: string, speakingRate?: number): Promise<HTMLAudioElement | null> => {
   try {
     const textChunks = splitTextForTTS(text)
     if (textChunks.length > 0) {
@@ -139,7 +139,8 @@ export const prepareFirstChunk = async (text: string): Promise<HTMLAudioElement 
       // 첫 번째 청크만 TTS 생성
       const response = await axios.post('/api/tts', {
         text: firstChunk,
-        speakingRate: TTS_SPEAKING_RATE
+        speakingRate: speakingRate || TTS_SPEAKING_RATE,
+        voiceId: voiceId
       })
 
       if (response.data.audioUrl) {
@@ -191,7 +192,7 @@ export const playFirstChunk = async (audio: HTMLAudioElement, onPlayStart?: () =
 }
 
 // 나머지 청크들을 백그라운드에서 생성하고 순차 재생하는 함수
-export const prepareRemainingChunks = async (text: string, stopRequestedRef?: React.MutableRefObject<boolean>): Promise<HTMLAudioElement[]> => {
+export const prepareRemainingChunks = async (text: string, stopRequestedRef?: React.MutableRefObject<boolean>, voiceId?: string, speakingRate?: number): Promise<HTMLAudioElement[]> => {
   try {
     const textChunks = splitTextForTTS(text)
     if (textChunks.length <= 1) {
@@ -207,11 +208,12 @@ export const prepareRemainingChunks = async (text: string, stopRequestedRef?: Re
       const chunkIndex = index + 1 // 실제 청크 인덱스 (첫 번째 제외)
       console.log(`청크 ${chunkIndex + 1}/${textChunks.length} TTS 생성 시작: ${chunk.substring(0, 50)}...`)
       
-      try {
-        const response = await axios.post('/api/tts', {
-          text: chunk,
-          speakingRate: TTS_SPEAKING_RATE
-        })
+        try {
+          const response = await axios.post('/api/tts', {
+            text: chunk,
+            speakingRate: speakingRate || TTS_SPEAKING_RATE,
+            voiceId: voiceId
+          })
 
         if (response.data.audioUrl) {
           const audio = new Audio(response.data.audioUrl)
@@ -313,6 +315,8 @@ interface TTSPlayerProps {
   onPlayEnd?: () => void
   autoPlay?: boolean
   className?: string
+  voiceId?: string
+  speakingRate?: number
 }
 
 export interface TTSPlayerRef {
@@ -327,7 +331,9 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
   onPlayStart, 
   onPlayEnd, 
   autoPlay = false,
-  className = ''
+  className = '',
+  voiceId,
+  speakingRate = TTS_SPEAKING_RATE
 }, ref) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null)
@@ -688,13 +694,15 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
             // 첫 번째 청크
             axios.post('/api/tts', {
               text: firstChunk,
-              speakingRate: TTS_SPEAKING_RATE
+              speakingRate: speakingRate,
+              voiceId: voiceId
             }),
             // 나머지 청크들
             ...remainingChunks.map(chunk => 
               axios.post('/api/tts', {
                 text: chunk,
-                speakingRate: TTS_SPEAKING_RATE
+                speakingRate: speakingRate,
+                voiceId: voiceId
               })
             )
           ])
@@ -910,7 +918,8 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
           // Supertone TTS API 호출
           const response = await axios.post('/api/tts', {
             text: chunk,
-            speakingRate: TTS_SPEAKING_RATE
+            speakingRate: speakingRate,
+            voiceId: voiceId
           })
 
           if (response.data.audioUrl) {

@@ -5,7 +5,7 @@ const SUPERTONE_API_KEY = process.env.SUPERTONE_API_KEY
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, voice, speakingRate = 1.4 } = await request.json()
+    const { text, voice, speakingRate = 1.4, voiceId } = await request.json()
 
     if (!text) {
       return NextResponse.json(
@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Supertone API key is not configured' }, { status: 500 })
     }
 
-    // 기본 설정값
-    const voiceId = 'weKbNjMh2V5MuXziwHwjoT' // 기본 voice ID
+    // Voice ID 설정 (요청에서 받은 voiceId 사용, 없으면 기본값)
+    const finalVoiceId = voiceId || 'weKbNjMh2V5MuXziwHwjoT' // 기본 voice ID
     const language = 'ko' // 한국어 (kr -> ko로 수정)
     const style = 'neutral' // 중립적인 톤
     const model = 'sona_speech_1' // 기본 모델
@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
       'speed': speakingRate  // 🚨 speakingRate 적용!
     }
 
-    console.log('TTS API 호출:', { text: text.substring(0, 50) + '...', voiceId, language, style, speakingRate })
+    console.log('TTS API 호출:', { text: text.substring(0, 50) + '...', voiceId: finalVoiceId, language, style, speakingRate })
 
     // Supertone API 호출
     const response = await fetch(
-      `https://supertoneapi.com/v1/text-to-speech/${voiceId}`,
+      `https://supertoneapi.com/v1/text-to-speech/${finalVoiceId}`,
       {
         method: 'POST',
         headers: {

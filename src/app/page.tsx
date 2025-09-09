@@ -40,6 +40,8 @@ export default function Home() {
     hashtags: []
   })
   const [brandVoiceImage, setBrandVoiceImage] = useState<string | null>(null)
+  const [selectedCharacter, setSelectedCharacter] = useState<string>('')
+  const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<string>('')
   
 
 
@@ -109,9 +111,17 @@ export default function Home() {
     // 자동으로 다음 단계로 넘어가지 않음 - 사용자가 Enter 키나 버튼을 눌러야 함
   }
 
-  const handleCharacterComplete = () => {
+  const handleCharacterComplete = (characterName?: string) => {
     console.log('🔄 4단계 → 5단계 전환, TTS 초기화 필요')
+    const characterToUse = characterName || currentSelectedCharacter
+    if (characterToUse) {
+      setSelectedCharacter(characterToUse)
+    }
     setCurrentStep(5)
+  }
+
+  const handleCharacterSelect = (characterName: string) => {
+    setCurrentSelectedCharacter(characterName)
   }
 
   const resetToStart = () => {
@@ -123,6 +133,8 @@ export default function Home() {
       hashtags: []
     })
     setBrandVoiceImage(null) // 이미지도 초기화
+    setSelectedCharacter('')
+    setCurrentSelectedCharacter('')
   }
 
   // 특정 단계로 이동하는 함수
@@ -292,12 +304,17 @@ export default function Home() {
               companyInfo={companyData.info.join('\n')}
               hashtags={companyData.hashtags}
               onComplete={handleCharacterComplete}
+              onCharacterSelect={handleCharacterSelect}
             />
           )}
           
           {currentStep === 5 && (
             <UseCaseSelection
               companyName={companyData.name}
+              companyInfo={companyData.info.join(' ')}
+              brandVoice={companyData.brandVoice.join(' ')}
+              hashtags={companyData.hashtags}
+              selectedCharacterName={selectedCharacter}
               onReset={resetToStart}
             />
           )}

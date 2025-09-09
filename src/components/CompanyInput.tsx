@@ -86,7 +86,7 @@ export default function CompanyInput({ onSubmit }: CompanyInputProps) {
     <div className="card max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6 text-center">
         <div>
-          <p className="text-gray-700 mb-4 text-center company-input-text" dangerouslySetInnerHTML={{
+          <p className="text-gray-700 mb-4 text-center company-input-text" style={{ paddingBottom: '5rem' }} dangerouslySetInnerHTML={{
             __html: "우리 회사의<br>브랜드 보이스가<br>궁금하다면?<span style=\"display:block; height:0.5em;\"></span>회사 이름을<br>알려주세요-"
           }}>
           </p>

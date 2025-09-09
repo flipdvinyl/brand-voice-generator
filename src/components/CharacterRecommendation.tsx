@@ -15,7 +15,8 @@ interface CharacterRecommendationProps {
   brandVoice: string
   companyInfo: string
   hashtags: string[]
-  onComplete: () => void
+  onComplete: (characterName?: string) => void
+  onCharacterSelect?: (characterName: string) => void
 }
 
 export default function CharacterRecommendation({ 
@@ -23,7 +24,8 @@ export default function CharacterRecommendation({
   brandVoice, 
   companyInfo,
   hashtags,
-  onComplete 
+  onComplete,
+  onCharacterSelect
 }: CharacterRecommendationProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const [recommendedCharacters, setRecommendedCharacters] = useState<CharacterVoice[]>([])
@@ -73,13 +75,9 @@ export default function CharacterRecommendation({
 
   const handleCharacterSelect = (characterName: string) => {
     setSelectedCharacter(characterName)
+    onCharacterSelect?.(characterName)
   }
 
-  const handleNext = () => {
-    if (selectedCharacter) {
-      onComplete()
-    }
-  }
 
   if (loading) {
     return (
@@ -232,18 +230,6 @@ export default function CharacterRecommendation({
           </div>
         ))}
       </div>
-
-      {selectedCharacter && (
-        <div className="text-center">
-          <button
-            onClick={handleNext}
-            className="bg-primary-500 text-white px-8 py-3 rounded-lg hover:bg-primary-600 transition-colors"
-          >
-            다음 단계로
-          </button>
-        </div>
-      )}
     </div>
   )
 }
-
