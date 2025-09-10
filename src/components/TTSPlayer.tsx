@@ -128,6 +128,33 @@ export const resetAllTTSGlobal = () => {
   }
 }
 
+// 오디오 엘리먼트를 DOM에 추가하는 헬퍼 함수
+const addAudioToDOM = (audio: HTMLAudioElement): void => {
+  try {
+    // 오디오 엘리먼트를 body에 추가 (숨김 처리)
+    audio.style.display = 'none'
+    audio.style.visibility = 'hidden'
+    audio.style.position = 'absolute'
+    audio.style.left = '-9999px'
+    document.body.appendChild(audio)
+    console.log('✅ 오디오 엘리먼트를 DOM에 추가 완료')
+  } catch (error) {
+    console.error('❌ 오디오 엘리먼트 DOM 추가 실패:', error)
+  }
+}
+
+// 오디오 엘리먼트를 DOM에서 안전하게 제거하는 헬퍼 함수
+const removeAudioFromDOM = (audio: HTMLAudioElement): void => {
+  try {
+    if (audio && audio.parentNode) {
+      audio.parentNode.removeChild(audio)
+      console.log('✅ 오디오 엘리먼트를 DOM에서 제거 완료')
+    }
+  } catch (error) {
+    console.error('❌ 오디오 엘리먼트 DOM 제거 실패:', error)
+  }
+}
+
 // 첫 번째 청크를 미리 생성하여 버퍼링하는 함수
 export const prepareFirstChunk = async (text: string, voiceId?: string, speakingRate?: number): Promise<HTMLAudioElement | null> => {
   try {
@@ -145,6 +172,8 @@ export const prepareFirstChunk = async (text: string, voiceId?: string, speaking
 
       if (response.data.audioUrl) {
         const audio = new Audio(response.data.audioUrl)
+        // 오디오 엘리먼트를 DOM에 추가
+        addAudioToDOM(audio)
         console.log('첫 번째 TTS 청크 생성 완료')
         return audio
       }
@@ -217,6 +246,8 @@ export const prepareRemainingChunks = async (text: string, stopRequestedRef?: Re
 
         if (response.data.audioUrl) {
           const audio = new Audio(response.data.audioUrl)
+          // 오디오 엘리먼트를 DOM에 추가
+          addAudioToDOM(audio)
           console.log(`청크 ${chunkIndex + 1} TTS 생성 완료`)
           return { index: chunkIndex, audio }
         }
@@ -360,7 +391,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
           currentAudio.volume = 0  // 볼륨을 0으로 설정
           currentAudio.muted = true  // 음소거 설정
           currentAudio.src = ''
-          currentAudio.remove()  // 오디오 요소 자체를 제거
+          removeAudioFromDOM(currentAudio)  // 오디오 요소를 DOM에서 제거
           console.log('✅ 현재 재생 중인 오디오 정리 완료')
         } catch (error) {
           console.error('❌ 현재 오디오 정리 중 오류:', error)
@@ -378,7 +409,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
             audio.volume = 0  // 볼륨을 0으로 설정
             audio.muted = true  // 음소거 설정
             audio.src = ''
-            audio.remove()  // 오디오 요소 자체를 제거
+            removeAudioFromDOM(audio)  // 오디오 요소를 DOM에서 제거
             console.log(`✅ 버퍼 ${index + 1} 오디오 정리 완료`)
           } catch (error) {
             console.error(`❌ 버퍼 ${index + 1} 정리 중 오류:`, error)
@@ -455,9 +486,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
           
           // 🚨 오디오 요소 완전 제거
           console.log('🚨 5단계: 오디오 요소 완전 제거...')
-          if (currentAudio.parentNode) {
-            currentAudio.parentNode.removeChild(currentAudio)
-          }
+          removeAudioFromDOM(currentAudio)
           console.log('✅ 오디오 요소 완전 제거 완료')
           
           console.log('✅ 현재 재생 중인 오디오 완전 제거 완료')
@@ -487,10 +516,8 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
             audio.currentTime = 0
             audio.src = ''
             
-            // 오디오 요소 자체를 제거
-            if (audio.parentNode) {
-              audio.parentNode.removeChild(audio)
-            }
+            // 오디오 요소를 DOM에서 제거
+            removeAudioFromDOM(audio)
             
             console.log(`✅ 버퍼 ${index + 1} 오디오 완전 제거 완료`)
           } catch (error) {
@@ -566,7 +593,7 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
               audioElement.onloadeddata = null
               
               // DOM에서 제거
-              audio.remove()
+              removeAudioFromDOM(audioElement)
               
               console.log(`✅ DOM audio 요소 ${index + 1} 제거 완료`)
             } catch (error) {
@@ -716,6 +743,8 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
           // 첫 번째 청크 처리
           if (firstResponse.data.audioUrl) {
             const firstAudio = new Audio(firstResponse.data.audioUrl)
+            // 오디오 엘리먼트를 DOM에 추가
+            addAudioToDOM(firstAudio)
             console.log('🎵 첫 번째 TTS 청크 생성 완료, 즉시 재생 시작')
             
             // 🚨 중요: currentAudio 상태와 전역 변수에 저장 (중지 시 찾기 위해)
@@ -765,6 +794,8 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
               const response = remainingResponses[i]
               if (response?.data?.audioUrl) {
                 const audio = new Audio(response.data.audioUrl)
+                // 오디오 엘리먼트를 DOM에 추가
+                addAudioToDOM(audio)
                 newAudioBuffers[i] = audio
                 console.log(`🎵 나머지 청크 ${i + 1} 버퍼에 저장 완료`)
               }
@@ -924,6 +955,8 @@ const TTSPlayer = forwardRef<TTSPlayerRef, TTSPlayerProps>(({
 
           if (response.data.audioUrl) {
             const audio = new Audio(response.data.audioUrl)
+            // 오디오 엘리먼트를 DOM에 추가
+            addAudioToDOM(audio)
             newAudioBuffers[i] = audio
             console.log(`나머지 청크 ${i + 1} TTS 생성 완료`)
           }

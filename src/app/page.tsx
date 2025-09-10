@@ -28,6 +28,7 @@ export type Character = {
 export default function Home() {
   // 이미지 생성 기능 제어 상태
   const [imageGenerationEnabled, setImageGenerationEnabled] = useState(true) // true: 이미지 생성 기능 켜기, false: 이미지 생성 기능 끄기
+  const [isImageFadingOut, setIsImageFadingOut] = useState(false) // 이미지 페이드 아웃 상태
   
   // 하단 플로팅 영역 높이
   const FLOATING_BOTTOM_HEIGHT = 200 // px
@@ -48,6 +49,22 @@ export default function Home() {
   // 섹션이 변경될 때마다 TTS 자동 초기화
   useEffect(() => {
     console.log(`🔄 섹션 변경 감지: ${currentStep}단계`)
+    
+    // 4,5 섹션 간 이동 시 모든 오디오 정지
+    if (currentStep === 4 || currentStep === 5) {
+      // 모든 HTML audio 요소 즉시 중지
+      const audioElements = document.querySelectorAll('audio')
+      audioElements.forEach(audio => {
+        audio.pause()
+        audio.currentTime = 0
+      })
+      
+      // 모든 MediaSource 정리
+      if (window.MediaSource) {
+        // MediaSource 정리 로직
+      }
+    }
+    
     // 약간의 지연을 두어 컴포넌트가 마운트된 후 TTS 초기화
     const timer = setTimeout(() => {
       resetAllTTSGlobal()
@@ -170,7 +187,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* 브랜드 보이스 이미지 배경 오버레이 - container 바깥에 배치 */}
       {brandVoiceImage && (
-        <div className="brand-voice-overlay">
+        <div className={`brand-voice-overlay ${isImageFadingOut ? 'fade-out' : ''}`}>
           <img 
             src={brandVoiceImage} 
             alt="브랜드 보이스 캐릭터 배경" 
@@ -183,7 +200,20 @@ export default function Home() {
       
       {/* 이미지 생성 토글 버튼 - 절대 위치 */}
       <button
-        onClick={() => setImageGenerationEnabled(!imageGenerationEnabled)}
+        onClick={() => {
+          if (imageGenerationEnabled && brandVoiceImage) {
+            // 이미지 생성 OFF 시 페이드 아웃 시작
+            setIsImageFadingOut(true)
+            setTimeout(() => {
+              setImageGenerationEnabled(false)
+              setBrandVoiceImage(null)
+              setIsImageFadingOut(false)
+            }, 3000) // 3초 후 이미지 제거
+          } else {
+            // 이미지 생성 ON 시 즉시 토글
+            setImageGenerationEnabled(true)
+          }
+        }}
         className="fixed text-3xl font-bold transition-all duration-200 hover:scale-110 z-50"
         style={{ 
           color: imageGenerationEnabled ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.1)',
@@ -326,7 +356,20 @@ export default function Home() {
           backgroundColor: 'rgb(220, 220, 220)', 
           boxShadow: '0 0 200px rgba(0, 0, 0, 0.1)' 
         }}>
-          <div className="max-w-4xl mx-auto px-4 h-full flex items-center justify-center">
+          <div className="max-w-4xl mx-auto px-4 h-full flex items-center justify-center relative">
+            {/* 홈버튼 - 좌측에 고정 */}
+            <button
+              onClick={resetToStart}
+              className="absolute w-14 h-14 rounded-full border bg-transparent flex items-center justify-center hover:bg-gray-100 transition-colors duration-200"
+              style={{ 
+                left: 'calc(50% - 50vw + 60px)',
+                borderWidth: '1px',
+                borderColor: 'rgba(0, 0, 0, 0.5)'
+              }}
+              title="처음으로 돌아가기"
+            >
+              <span className="text-2xl emoji-mono" style={{ fontSize: '1.8em', transform: 'translateY(-3px)' }}>⌂</span>
+            </button>
             {currentStep === 1 && (
               <div className="text-center">
                 <button
@@ -394,7 +437,7 @@ export default function Home() {
             )}
             
             {currentStep === 4 && (
-              <div>
+              <div className="text-center">
                 <button
                   onClick={() => handleCharacterComplete()}
                   className="btn-primary"
@@ -407,18 +450,40 @@ export default function Home() {
                 >
                   다음 단계로 →
                 </button>
+                <div className="mt-2 text-gray-600 step-label">
+                  이제 다양한 보이스 활용 사례를 제안해 드려요
+                </div>
               </div>
             )}
             
+            {/* 4단계 재생성 버튼 - 우측에 고정 */}
+            {currentStep === 4 && (
+              <button
+                onClick={() => goToStep(4)}
+                className="absolute w-14 h-14 rounded-full border bg-transparent flex items-center justify-center hover:bg-gray-100 transition-colors duration-200"
+                style={{ 
+                  right: 'calc(50% - 50vw + 60px)',
+                  borderWidth: '1px',
+                  borderColor: 'rgba(0, 0, 0, 0.5)'
+                }}
+                title="캐릭터 추천 다시 생성"
+              >
+                <span className="text-2xl emoji-mono" style={{ fontSize: '1.8em', transform: 'translateY(-3px)' }}>↺</span>
+              </button>
+            )}
+            
             {currentStep === 5 && (
-              <div>
+              <div className="text-center">
                 <button
-                  onClick={resetToStart}
+                  onClick={() => setCurrentStep(4)}
                   className="btn-secondary text-gray-700"
                   style={{ '--tw-bg-opacity': 0 } as React.CSSProperties}
                 >
-                  처음부터 다시 시작
+                  ← 다른 목소리로 들어보기
                 </button>
+                <div className="mt-2 text-gray-600 step-label">
+                  다른 캐릭터의 목소리도 들어보세요
+                </div>
               </div>
             )}
           </div>

@@ -20,6 +20,10 @@
 }
 
 @layer components {
+  .emoji-mono {
+    filter: grayscale(1) contrast(1.2);
+  }
+  
   .btn-primary {
     @apply bg-primary-600 hover:bg-primary-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
     position: relative;
@@ -97,6 +101,17 @@
   @keyframes fadeInOut {
     0% { opacity: 0; }
     100% { opacity: 1; }
+  }
+  
+  /* 이미지 페이드 아웃 애니메이션 */
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  
+  /* 페이드 아웃 클래스 */
+  .fade-out {
+    animation: fadeOut 3s ease-in-out forwards;
   }
   
   /* 이미지 위에 20% 알파값의 흰색 박스 */
