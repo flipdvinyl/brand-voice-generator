@@ -42,6 +42,7 @@ export default function UseCaseSelection({
   const [storeAmbience, setStoreAmbience] = useState<HTMLAudioElement | null>(null)
   const [isStoreAnnouncementPlaying, setIsStoreAnnouncementPlaying] = useState(false)
   const [isPhoneEQActive, setIsPhoneEQActive] = useState(false)
+  const [phoneRingAudio, setPhoneRingAudio] = useState<HTMLAudioElement | null>(null)
   
   // 🚨 중복 호출 방지를 위한 ref (다른 섹션과 동일한 패턴)
   const isFetchingRef = React.useRef(false)
@@ -57,6 +58,10 @@ export default function UseCaseSelection({
       if (storeAmbience) {
         storeAmbience.pause()
         storeAmbience.currentTime = 0
+      }
+      if (phoneRingAudio) {
+        phoneRingAudio.pause()
+        phoneRingAudio.currentTime = 0
       }
       cleanupPhoneEQ()
     }
@@ -368,6 +373,11 @@ Radio CM: [내용]
       removePhoneEQ()
       setIsPhoneEQActive(false)
     }
+    if (phoneRingAudio) {
+      phoneRingAudio.pause()
+      phoneRingAudio.currentTime = 0
+      setPhoneRingAudio(null)
+    }
   }
 
   const handleContentClick = async (text: string, contentType: string) => {
@@ -400,6 +410,11 @@ Radio CM: [내용]
       removePhoneEQ()
       setIsPhoneEQActive(false)
     }
+    if (contentType !== 'customer' && phoneRingAudio) {
+      phoneRingAudio.pause()
+      phoneRingAudio.currentTime = 0
+      setPhoneRingAudio(null)
+    }
     
     // TTS 중지가 완전히 완료될 때까지 잠시 대기
     await new Promise(resolve => setTimeout(resolve, 100))
@@ -420,10 +435,45 @@ Radio CM: [내용]
       setIsStoreAnnouncementPlaying(false)
     }
     
-    // 고객상담인 경우 전화기 EQ 활성화
+    // 고객상담인 경우 전화기 EQ 활성화 및 전화 벨소리 시작
     if (contentType === 'customer') {
       setIsPhoneEQActive(true)
       console.log('📞 고객상담 - 전화기 EQ 필터 활성화')
+      
+      // 전화 벨소리 재생 (볼륨 50%, 1회만)
+      try {
+        const ringAudio = new Audio('/phone-ring.mp3')
+        ringAudio.volume = 0.5
+        ringAudio.loop = false
+        setPhoneRingAudio(ringAudio)
+        
+        console.log('📞 전화 벨소리 재생 시작')
+        
+        // 벨소리 재생 완료를 기다리는 Promise
+        const ringPromise = new Promise<void>((resolve, reject) => {
+          ringAudio.onended = () => {
+            console.log('📞 전화 벨소리 재생 완료')
+            setPhoneRingAudio(null)
+            resolve()
+          }
+          
+          ringAudio.onerror = (error) => {
+            console.error('📞 전화 벨소리 재생 오류:', error)
+            setPhoneRingAudio(null)
+            reject(error)
+          }
+        })
+        
+        // 벨소리 재생 시작
+        await ringAudio.play()
+        
+        // 벨소리 재생 완료까지 대기
+        await ringPromise
+        
+      } catch (error) {
+        console.error('📞 전화 벨소리 재생 실패:', error)
+        setPhoneRingAudio(null)
+      }
     } else {
       setIsPhoneEQActive(false)
     }
@@ -436,7 +486,7 @@ Radio CM: [내용]
       if (contentType === 'customer') {
         console.log('📞 고객상담 - 전화기 EQ 적용을 위한 특별 처리 시작')
         
-        // TTS 재생 시작
+        // TTS 재생 시작 (벨소리 완료 후 실행됨)
         const playPromise = ttsPlayerRef.current.playFullTTS(text)
         
         // 전화기 EQ 적용을 지속적으로 시도하는 함수

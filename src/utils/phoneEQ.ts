@@ -41,7 +41,7 @@ export class PhoneEQProcessor {
       
       // 게인 노드 (볼륨 조절) - 1.5배 더 극적으로
       this.gainNode = this.audioContext.createGain()
-      this.gainNode.gain.value = 1.3 // 볼륨 증폭
+      this.gainNode.gain.value = 1.5 // 볼륨 1.5배 증폭
       
       // 저역 통과 필터 (고주파 제거 - 전화기 특성) - 1.5배 더 극적으로
       this.lowPassFilter = this.audioContext.createBiquadFilter()
@@ -62,9 +62,9 @@ export class PhoneEQProcessor {
       this.bandPassFilter.Q.value = 1.5 // 더 강한 대역 필터링 (1.0 → 1.5)
       this.bandPassFilter.gain.value = 3.0 // 더 강한 중간 주파수 강조 (2.0 → 3.0)
       
-      // 출력 게인 노드
+      // 출력 게인 노드 - 추가 1.5배 증폭
       this.outputGain = this.audioContext.createGain()
-      this.outputGain.gain.value = 1.0
+      this.outputGain.gain.value = 1.5 // 추가 1.5배 증폭
       
       // 필터 체인 연결
       this.source
