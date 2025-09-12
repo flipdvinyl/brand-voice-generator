@@ -79,7 +79,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1; /* 배경 레이어에 배치하되 보이도록 */
+    z-index: 10; /* 배경 프로필 이미지보다 훨씬 위에 배치 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -198,6 +198,7 @@
   /* 헤더 타이틀 폰트 크기 - gray-700의 1.5배 */
   .header-title {
     font-size: 5.25vw; /* 3.5vw * 1.5 = 5.25vw */
+    text-shadow: 0 0 20px rgba(220, 220, 220, 1);
   }
   
   /* 헤더 설명 폰트 크기 - gray-700과 동일 */
@@ -257,7 +258,7 @@
   /* container 클래스가 이미지 위에 보이도록 z-index 설정 */
   .container {
     position: relative;
-    z-index: 50; /* 이미지와 흰색 박스 위에 */
+    z-index: 60; /* Google AI 생성 이미지보다 위에 */
   }
   
   /* 3단계 브랜드 보이스에서만 container에 드롭 섀도우 적용 */
@@ -267,9 +268,16 @@
   
   /* 3단계 브랜드 보이스에서 container 내부의 모든 요소들에 드롭 섀도우 적용 */
   .container.brand-voice-step .text-gray-700 {
-    filter: drop-shadow(0 0 20px rgba(220, 220, 220, .7));
-    text-shadow: 0 0 37px rgba(220, 220, 220, 1);
-    
+    filter: drop-shadow(0 0 30px rgba(220, 220, 220, 1));
+    text-shadow: 0 0 20px rgba(220, 220, 220, 1);
+    backdrop-filter: blur(10px);
+  }
+  
+  /* 브랜드 보이스 본문 콘텐츠 스타일 */
+  .brand-voice-content {
+    filter: drop-shadow(0 0 30px rgba(220, 220, 220, 1));
+    backdrop-filter: blur(10px);
+    padding: 20px;
   }
   
   /* 특정 요소들은 더 강한 드롭 섀도우 적용 */

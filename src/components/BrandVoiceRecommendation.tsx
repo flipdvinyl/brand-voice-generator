@@ -27,6 +27,7 @@ function BrandVoiceRecommendation({
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
   const [imageError, setImageError] = useState('')
   const [isPlaying, setIsPlaying] = useState(false)
+  const [loadingDots, setLoadingDots] = useState('')
   
   // 🚨 중복 호출 방지를 위한 ref (CompanyInfo와 동일한 패턴)
   const isFetchingRef = React.useRef(false)
@@ -51,6 +52,22 @@ function BrandVoiceRecommendation({
       generateImage()
     }
   }, [brandVoice, imageGenerationEnabled])
+
+  // 로딩 점 애니메이션 효과
+  useEffect(() => {
+    if (isGeneratingImage) {
+      const interval = setInterval(() => {
+        setLoadingDots(prev => {
+          if (prev === '...') return ''
+          return prev + '.'
+        })
+      }, 300) // 0.3초마다 점 추가
+
+      return () => clearInterval(interval)
+    } else {
+      setLoadingDots('')
+    }
+  }, [isGeneratingImage])
 
   const fetchBrandVoice = async () => {
     try {
@@ -226,12 +243,12 @@ function BrandVoiceRecommendation({
   }
 
   return (
-    <div className="card p-6">
-      <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }} dangerouslySetInnerHTML={{
-        __html: `${companyName}에 어울리는<br>브랜드 보이스를 제안해요`
-      }}></h2>
-      
-      <div className="mb-6">
+    <div className="card p-6 relative">
+        <h2 className="header-title text-center mb-12" style={{ color: 'rgba(0, 0, 0, 0.8)' }} dangerouslySetInnerHTML={{
+          __html: `${companyName}에 어울리는<br>브랜드 보이스를 제안해요`
+        }}></h2>
+        
+        <div className="mb-6">
         <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4 brand-voice-content">
           {brandVoice}
         </div>
@@ -264,14 +281,13 @@ function BrandVoiceRecommendation({
 
         {/* 이미지 생성 상태 표시 (imageGenerationEnabled가 true일 때만) */}
         {imageGenerationEnabled && isGeneratingImage && (
-          <div className="flex items-center justify-center py-8 loading-container">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-3 text-gray-600">AI가 브랜드 보이스 캐릭터 이미지를 생성하는 중...</span>
+          <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4 brand-voice-content">
+            브랜드 보이스에 캐릭터를 상상하고 있어요{loadingDots}
           </div>
         )}
         
         {imageGenerationEnabled && imageError && (
-          <div className="text-red-600 text-center py-4">
+          <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4 brand-voice-content">
             {imageError}
             <button 
               onClick={generateImage}
@@ -281,18 +297,18 @@ function BrandVoiceRecommendation({
             </button>
           </div>
         )}
-      </div>
-      
-      <div className="flex justify-between items-center hidden">
-        <TTSPlayer 
-          ref={ttsPlayerRef}
-          text={brandVoice}
-          onPlayStart={() => setIsPlaying(true)}
-          onPlayEnd={() => setIsPlaying(false)}
-          className="flex-1 mr-4"
-        />
-      </div>
-      
+        </div>
+        
+        <div className="flex justify-between items-center hidden">
+          <TTSPlayer 
+            ref={ttsPlayerRef}
+            text={brandVoice}
+            onPlayStart={() => setIsPlaying(true)}
+            onPlayEnd={() => setIsPlaying(false)}
+            className="flex-1 mr-4"
+          />
+        </div>
+        
     </div>
   )
 }

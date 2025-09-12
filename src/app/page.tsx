@@ -185,6 +185,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* 배경 프로필 이미지 (3단계에서만 표시, 알파 20%) */}
+      {currentStep === 3 && (
+        <div 
+          className="fixed inset-0 flex items-center justify-center pointer-events-none"
+          style={{ 
+            zIndex: 1,
+            opacity: 0.2
+          }}
+        >
+          <img 
+            src="/profile_default.png" 
+            alt="배경 프로필" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
       {/* 브랜드 보이스 이미지 배경 오버레이 - container 바깥에 배치 */}
       {brandVoiceImage && (
         <div className={`brand-voice-overlay ${isImageFadingOut ? 'fade-out' : ''}`}>
