@@ -27,7 +27,6 @@ function BrandVoiceRecommendation({
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
   const [imageError, setImageError] = useState('')
   const [isPlaying, setIsPlaying] = useState(false)
-  const [loadingDots, setLoadingDots] = useState('')
   
   // 🚨 중복 호출 방지를 위한 ref (CompanyInfo와 동일한 패턴)
   const isFetchingRef = React.useRef(false)
@@ -53,21 +52,6 @@ function BrandVoiceRecommendation({
     }
   }, [brandVoice, imageGenerationEnabled])
 
-  // 로딩 점 애니메이션 효과
-  useEffect(() => {
-    if (isGeneratingImage) {
-      const interval = setInterval(() => {
-        setLoadingDots(prev => {
-          if (prev === '...') return ''
-          return prev + '.'
-        })
-      }, 300) // 0.3초마다 점 추가
-
-      return () => clearInterval(interval)
-    } else {
-      setLoadingDots('')
-    }
-  }, [isGeneratingImage])
 
   const fetchBrandVoice = async () => {
     try {
@@ -279,13 +263,7 @@ function BrandVoiceRecommendation({
           </div>
         )}
 
-        {/* 이미지 생성 상태 표시 (imageGenerationEnabled가 true일 때만) */}
-        {imageGenerationEnabled && isGeneratingImage && (
-          <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4 brand-voice-content">
-            브랜드 보이스에 캐릭터를 상상하고 있어요{loadingDots}
-          </div>
-        )}
-        
+        {/* 이미지 생성 에러 메시지만 표시 */}
         {imageGenerationEnabled && imageError && (
           <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4 brand-voice-content">
             {imageError}
