@@ -141,6 +141,21 @@ export default function Home() {
     setCurrentSelectedCharacter(characterName)
   }
 
+  // 섹션4에서 수퍼톤 보이스 추천 완료 시 배경 이미지 페이드 아웃
+  const handleRecommendationComplete = () => {
+    if (brandVoiceImage && !isImageFadingOut) {
+      console.log('🎨 섹션4 수퍼톤 보이스 추천 완료 - 배경 이미지 페이드 아웃 시작')
+      setIsImageFadingOut(true)
+      
+      // 3초 후 이미지 제거
+      setTimeout(() => {
+        setBrandVoiceImage(null)
+        setIsImageFadingOut(false)
+        console.log('🎨 배경 이미지 페이드 아웃 완료 및 제거')
+      }, 3000)
+    }
+  }
+
   const resetToStart = () => {
     setCurrentStep(1)
     setCompanyData({
@@ -150,6 +165,7 @@ export default function Home() {
       hashtags: []
     })
     setBrandVoiceImage(null) // 이미지도 초기화
+    setIsImageFadingOut(false) // 페이드 아웃 상태도 초기화
     setSelectedCharacter('')
     setCurrentSelectedCharacter('')
   }
@@ -163,6 +179,8 @@ export default function Home() {
       setCurrentStep(2)
     } else if (step === 3 && companyData.info.length > 0) {
       console.log('🔄 특정 단계 이동: 3단계, TTS 초기화 필요')
+      // 섹션3으로 돌아갈 때 페이드 아웃 상태 초기화
+      setIsImageFadingOut(false)
       setCurrentStep(3)
     } else if (step === 4 && companyData.brandVoice.length > 0) {
       console.log('🔄 특정 단계 이동: 4단계, TTS 초기화 필요')
@@ -352,6 +370,7 @@ export default function Home() {
               hashtags={companyData.hashtags}
               onComplete={handleCharacterComplete}
               onCharacterSelect={handleCharacterSelect}
+              onRecommendationComplete={handleRecommendationComplete}
             />
           )}
           

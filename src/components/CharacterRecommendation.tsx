@@ -17,6 +17,7 @@ interface CharacterRecommendationProps {
   hashtags: string[]
   onComplete: (characterName?: string) => void
   onCharacterSelect?: (characterName: string) => void
+  onRecommendationComplete?: () => void
 }
 
 export default function CharacterRecommendation({ 
@@ -25,7 +26,8 @@ export default function CharacterRecommendation({
   companyInfo,
   hashtags,
   onComplete,
-  onCharacterSelect
+  onCharacterSelect,
+  onRecommendationComplete
 }: CharacterRecommendationProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const [recommendedCharacters, setRecommendedCharacters] = useState<CharacterVoice[]>([])
@@ -64,6 +66,9 @@ export default function CharacterRecommendation({
       
       setRecommendedCharacters(characterMetadata)
       setRecommendationReasons(response.recommendationReasons)
+      
+      // 추천 완료 콜백 호출
+      onRecommendationComplete?.()
     } catch (err) {
       console.error('Failed to fetch character recommendations:', err)
       setError('캐릭터 추천을 불러오는데 실패했습니다.')
