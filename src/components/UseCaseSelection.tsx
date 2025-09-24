@@ -44,6 +44,12 @@ export default function UseCaseSelection({
   const [isPhoneEQActive, setIsPhoneEQActive] = useState(false)
   const [phoneRingAudio, setPhoneRingAudio] = useState<HTMLAudioElement | null>(null)
   
+  // 현재 선택된 콘텐츠와 텍스트를 관리하는 상태
+  const [selectedContentType, setSelectedContentType] = useState<string>('')
+  const [selectedContentText, setSelectedContentText] = useState<string>('')
+  const [selectedContentImage, setSelectedContentImage] = useState<string>('')
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false)
+  
   // 🚨 중복 호출 방지를 위한 ref (다른 섹션과 동일한 패턴)
   const isFetchingRef = React.useRef(false)
   const ttsPlayerRef = React.useRef<TTSPlayerRef>(null)
@@ -358,6 +364,74 @@ Radio CM: [내용]
   }
 
   // TTS 재생 완료 시 호출되는 콜백
+  // TV CM 이미지 생성 함수
+  const generateTVCMImage = async (tvcmText: string) => {
+    try {
+      setIsGeneratingImage(true)
+      
+      console.log('🎨 TV CM 이미지 생성 시작...')
+      console.log('📝 TV CM 텍스트:', tvcmText.substring(0, 100) + '...')
+      
+      // TV CM용 프롬프트 생성
+      const prompt = `일본만화 '바다가 들린다' 같은 느낌의 애니메이션 작화, 16:9 비율, ${companyName} 브랜드의 TV 광고 이미지. TVCM 내용: ${tvcmText}. 전체 이미지는 거실에 놓여있는 75인치급 TV가 화면의 80%를 차지하게 해주고, 앞에서 요청한 광고 이미지를 TV안에서 보여줘. 생성 결과물에 텍스트는 넣지 말아줘`
+      
+      const response = await axios.post('/api/gemini-tvcm-image', {
+        prompt: prompt,
+        windowRatio: { width: 16, height: 9 } // 16:9 비율 고정
+      })
+
+      console.log('📡 TV CM 이미지 API 응답:', response.data)
+
+      if (response.data.success && response.data.imageData) {
+        // base64 이미지 데이터를 data URL로 변환
+        const imageUrl = `data:${response.data.mimeType};base64,${response.data.imageData}`
+        setSelectedContentImage(imageUrl)
+        console.log('✅ TV CM 이미지 생성 성공')
+      } else {
+        console.error('❌ TV CM 이미지 API 응답에 이미지 데이터가 없음:', response.data)
+        throw new Error(response.data.error || 'TV CM 이미지 데이터를 받지 못했습니다.')
+      }
+    } catch (error: any) {
+      console.error('❌ TV CM 이미지 생성 오류:', error)
+    } finally {
+      setIsGeneratingImage(false)
+    }
+  }
+
+  // 매장방송 이미지 생성 함수
+  const generateStoreImage = async (storeText: string) => {
+    try {
+      setIsGeneratingImage(true)
+      
+      console.log('🏪 매장방송 이미지 생성 시작...')
+      console.log('📝 매장방송 텍스트:', storeText.substring(0, 100) + '...')
+      
+      // 매장방송용 프롬프트 생성
+      const prompt = `일본만화 '바다가 들린다' 같은 느낌의 애니메이션 작화, 입구에서 바라본 ${companyName} 매장 내부 모습, 16:9 비율, 매장방송 내용: ${storeText}. 생성 결과물에 텍스트는 넣지 말아줘`
+      
+      const response = await axios.post('/api/gemini-tvcm-image', {
+        prompt: prompt,
+        windowRatio: { width: 16, height: 9 } // 16:9 비율 고정
+      })
+
+      console.log('📡 매장방송 이미지 API 응답:', response.data)
+
+      if (response.data.success && response.data.imageData) {
+        // base64 이미지 데이터를 data URL로 변환
+        const imageUrl = `data:${response.data.mimeType};base64,${response.data.imageData}`
+        setSelectedContentImage(imageUrl)
+        console.log('✅ 매장방송 이미지 생성 성공')
+      } else {
+        console.error('❌ 매장방송 이미지 API 응답에 이미지 데이터가 없음:', response.data)
+        throw new Error(response.data.error || '매장방송 이미지 데이터를 받지 못했습니다.')
+      }
+    } catch (error: any) {
+      console.error('❌ 매장방송 이미지 생성 오류:', error)
+    } finally {
+      setIsGeneratingImage(false)
+    }
+  }
+
   const handleTTSPlayEnd = () => {
     console.log('🎵 TTS 재생 완료 감지')
     if (isRadioCMPlaying && backgroundMusic) {
@@ -382,6 +456,25 @@ Radio CM: [내용]
 
   const handleContentClick = async (text: string, contentType: string) => {
     console.log('🎵 handleContentClick 시작:', text.substring(0, 50) + '...')
+    
+    // 선택된 콘텐츠 정보를 상태에 저장
+    setSelectedContentType(contentType)
+    setSelectedContentText(text)
+    
+    // 콘텐츠 타입에 따른 이미지 설정
+    if (contentType === 'radiocm') {
+      setSelectedContentImage('/brand_radio.jpg')
+    } else if (contentType === 'tvcm') {
+      // TV CM 선택 시 이미지 생성
+      setSelectedContentImage('') // 먼저 기존 이미지 제거
+      generateTVCMImage(text)
+    } else if (contentType === 'store') {
+      // 매장방송 선택 시 이미지 생성
+      setSelectedContentImage('') // 먼저 기존 이미지 제거
+      generateStoreImage(text)
+    } else {
+      setSelectedContentImage('') // 다른 콘텐츠는 이미지 없음
+    }
     
     // TTSPlayer가 준비되어 있는지 확인
     if (!ttsPlayerRef.current) {
@@ -606,75 +699,106 @@ Radio CM: [내용]
         </h2>
         <p className="text-gray-600">
           {companyName}의 브랜드 보이스로 생성된 다양한 콘텐츠입니다.<br />
-          텍스트를 클릭하면 음성으로 들을 수 있습니다.
+          아래 버튼을 클릭하면 해당 콘텐츠가 위에 표시되고 음성으로 들을 수 있습니다.
         </p>
       </div>
 
       {generatedContent && (
         <div className="space-y-6">
-          {/* TVCM */}
-          <div 
-            className="bg-white bg-opacity-40 rounded-lg p-6 cursor-pointer hover:bg-opacity-60 transition-all duration-200"
-            onClick={() => handleContentClick(generatedContent.tvcm, 'tvcm')}
-          >
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              📺 TVCM
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {generatedContent.tvcm}
-            </p>
+          {/* 선택된 콘텐츠 이미지 표시 영역 - 16:9 비율 고정 */}
+          {(selectedContentImage || isGeneratingImage) && (
+            <div className="w-full mb-6">
+              <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                {selectedContentImage ? (
+                  <img 
+                    src={selectedContentImage} 
+                    alt="콘텐츠 이미지" 
+                    className="absolute inset-0 w-full h-full rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="absolute inset-0 w-full h-full rounded-lg bg-gray-200 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 선택된 콘텐츠 텍스트 표시 영역 */}
+          <div className="bg-white bg-opacity-60 rounded-lg p-8 min-h-[200px]">
+            <div className="text-center">
+              {selectedContentText ? (
+                <div>
+                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    {selectedContentText}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-gray-500">
+                  <p className="text-xl mb-4">아래 버튼을 클릭하여 콘텐츠를 확인하세요</p>
+                  <p>각 버튼을 클릭하면 해당 콘텐츠가 여기에 표시되고 음성으로 들을 수 있습니다.</p>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Radio CM */}
-          <div 
-            className="bg-white bg-opacity-40 rounded-lg p-6 cursor-pointer hover:bg-opacity-60 transition-all duration-200"
-            onClick={() => handleContentClick(generatedContent.radiocm, 'radiocm')}
-          >
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              📻 Radio CM
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {generatedContent.radiocm}
-            </p>
-          </div>
+          {/* 콘텐츠 선택 버튼들 - 하단 플로팅 위에 가로 배열 */}
+          <div className="fixed left-0 right-0 z-40 px-4" style={{ bottom: '300px' }}>
+            <div className="max-w-4xl mx-auto">
+              <div className="flex justify-center gap-4">
+                {/* TVCM 버튼 */}
+                <div 
+                  className="bg-white bg-opacity-40 rounded-lg p-4 cursor-pointer hover:bg-opacity-60 transition-all duration-200 text-center flex-1 max-w-[200px]"
+                  onClick={() => handleContentClick(generatedContent.tvcm, 'tvcm')}
+                >
+                  <h3 className="text-lg font-semibold flex items-center justify-center">
+                    📺 TVCM
+                  </h3>
+                </div>
 
-          {/* 사내방송 */}
-          <div 
-            className="bg-white bg-opacity-40 rounded-lg p-6 cursor-pointer hover:bg-opacity-60 transition-all duration-200"
-            onClick={() => handleContentClick(generatedContent.internalBroadcast, 'internal')}
-          >
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              🏢 사내방송
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {generatedContent.internalBroadcast}
-            </p>
-          </div>
+                {/* Radio CM 버튼 */}
+                <div 
+                  className="bg-white bg-opacity-40 rounded-lg p-4 cursor-pointer hover:bg-opacity-60 transition-all duration-200 text-center flex-1 max-w-[200px]"
+                  onClick={() => handleContentClick(generatedContent.radiocm, 'radiocm')}
+                >
+                  <h3 className="text-lg font-semibold flex items-center justify-center">
+                    📻 Radio CM
+                  </h3>
+                </div>
 
-          {/* 고객상담 */}
-          <div 
-            className="bg-white bg-opacity-40 rounded-lg p-6 cursor-pointer hover:bg-opacity-60 transition-all duration-200"
-            onClick={() => handleContentClick(generatedContent.customerService, 'customer')}
-          >
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              🎧 고객상담
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {generatedContent.customerService}
-            </p>
-          </div>
+                {/* 매장방송 버튼 */}
+                <div 
+                  className="bg-white bg-opacity-40 rounded-lg p-4 cursor-pointer hover:bg-opacity-60 transition-all duration-200 text-center flex-1 max-w-[200px]"
+                  onClick={() => handleContentClick(generatedContent.storeAnnouncement, 'store')}
+                >
+                  <h3 className="text-lg font-semibold flex items-center justify-center">
+                    🏪 매장방송
+                  </h3>
+                </div>
 
-          {/* 매장방송 */}
-          <div 
-            className="bg-white bg-opacity-40 rounded-lg p-6 cursor-pointer hover:bg-opacity-60 transition-all duration-200"
-            onClick={() => handleContentClick(generatedContent.storeAnnouncement, 'store')}
-          >
-            <h3 className="text-xl font-semibold mb-4 flex items-center">
-              🏪 매장방송
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {generatedContent.storeAnnouncement}
-            </p>
+                {/* 고객상담 버튼 - 마지막에 배치 */}
+                <div 
+                  className="bg-white bg-opacity-40 rounded-lg p-4 cursor-pointer hover:bg-opacity-60 transition-all duration-200 text-center flex-1 max-w-[200px]"
+                  onClick={() => handleContentClick(generatedContent.customerService, 'customer')}
+                >
+                  <h3 className="text-lg font-semibold flex items-center justify-center">
+                    🎧 고객상담
+                  </h3>
+                </div>
+
+                {/* 사내방송 버튼 - 주석처리 (당분간 사용 안함) */}
+                {/* 
+                <div 
+                  className="bg-white bg-opacity-40 rounded-lg p-4 cursor-pointer hover:bg-opacity-60 transition-all duration-200 text-center flex-1 max-w-[200px]"
+                  onClick={() => handleContentClick(generatedContent.internalBroadcast, 'internal')}
+                >
+                  <h3 className="text-lg font-semibold flex items-center justify-center">
+                    🏢 사내방송
+                  </h3>
+                </div>
+                */}
+              </div>
+            </div>
           </div>
         </div>
       )}

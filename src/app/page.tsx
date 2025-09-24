@@ -335,11 +335,11 @@ export default function Home() {
 
         {/* Content */}
         <div className="max-w-4xl mx-auto" style={{ 
-          height: `calc(100vh - ${FLOATING_BOTTOM_HEIGHT}px)`, 
+          height: currentStep === 5 ? `calc(100vh - 400px)` : `calc(100vh - ${FLOATING_BOTTOM_HEIGHT}px)`, 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          paddingBottom: `${FLOATING_BOTTOM_HEIGHT * 2}px`
+          paddingBottom: currentStep === 5 ? '400px' : `${FLOATING_BOTTOM_HEIGHT * 2}px`
         }}>
           {currentStep === 1 && (
             <CompanyInput onSubmit={handleCompanySubmit} />
